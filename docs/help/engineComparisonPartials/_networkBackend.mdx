@@ -45,22 +45,22 @@ Le moteur sert surtout de client + nœud de simulation locale, le vrai SC-like s
 ### Network & Backend - Features
 | Feature                                 | Godot  | Unreal Engine 5 | Unity  | CryEngine | O3DE    |
 | --------------------------------------- | ------ | --------------- | ------ | --------- | ------- |
-| Dedicated server robuste                | ❌ ⭐⭐   | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | ✅       |
-| High-level networking API               | ✅      | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| RPC / Replication de base               | ✅      | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| Network relevancy (par distance / zone) | ❌ ⭐⭐⭐  | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| Replication Graph / filtrage avancé     | ❌ ⭐⭐⭐  | ✅               | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐  |
-| Client-side prediction                  | 🛠️ ⭐⭐ | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| Rollback / reconciliation               | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐  |
-| Autorité serveur stricte                | ❌ ⭐⭐   | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | ✅       |
-| Autorité partagée / hybride             | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Migration live des joueurs              | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Server meshing                          | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Simulation shardée par zone             | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| Persistence serveur (DB)                | ❌ ⭐⭐   | ❌ ⭐⭐            | ❌ ⭐⭐   | ❌ ⭐⭐      | 🛠️ ⭐⭐  |
-| Persistence distribuée                  | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Backend micro-services                  | ❌ ⭐⭐   | ❌ ⭐⭐            | ❌ ⭐⭐   | ❌ ⭐⭐      | 🛠️ ⭐⭐  |
-| Synchronisation monde massif            | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| Dedicated server robuste                | ❌ 🟡  | ✅               | 🛠️ 🟡| 🛠️ 🟡   | ✅       |
+| High-level networking API               | ✅      | ✅               | ✅      | 🛠️ 🟡   | 🛠️ 🟡 |
+| RPC / Replication de base               | ✅      | ✅               | ✅      | 🛠️ 🟡   | 🛠️ 🟡 |
+| Network relevancy (par distance / zone) | ❌ 🔴 | ✅               | 🛠️ 🟡| 🛠️ 🟡   | 🛠️ 🟡 |
+| Replication Graph / filtrage avancé     | ❌ 🔴 | ✅               | ❌ 🔴 | ❌ 🔴    | 🛠️ 🟡 |
+| Client-side prediction                  | 🛠️ 🟡| ✅               | 🛠️ 🟡| 🛠️ 🟡   | 🛠️ 🟡 |
+| Rollback / reconciliation               | ❌ 🔴 | 🛠️ 🟡         | 🛠️ 🟡| ❌ 🔴    | 🛠️ 🟡 |
+| Autorité serveur stricte                | ❌ 🟡  | ✅               | 🛠️ 🟡| 🛠️ 🟡   | ✅       |
+| Autorité partagée / hybride             | ❌ 🔴 | ❌ 🔴          | ❌ 🔴 | ❌ 🔴    | 🛠️ 🔴|
+| Migration live des joueurs              | ❌ 🔴 | ❌ 🔴          | ❌ 🔴 | ❌ 🔴    | 🛠️ 🔴|
+| Server meshing                          | ❌ 🔴 | ❌ 🔴          | ❌ 🔴 | ❌ 🔴    | 🛠️ 🔴|
+| Simulation shardée par zone             | ❌ 🔴 | 🛠️ 🟡         | 🛠️ 🟡| 🛠️ 🟡   | 🛠️ 🟡 |
+| Persistence serveur (DB)                | ❌ 🟡  | ❌ 🟡           | ❌ 🟡  | ❌ 🟡     | 🛠️ 🟡 |
+| Persistence distribuée                  | ❌ 🔴 | ❌ 🔴          | ❌ 🔴 | ❌ 🔴    | 🛠️ 🔴|
+| Backend micro-services                  | ❌ 🟡  | ❌ 🟡           | ❌ 🟡  | ❌ 🟡     | 🛠️ 🟡 |
+| Synchronisation monde massif            | ❌ 🔴 | 🛠️ 🟡         | 🛠️ 🟡| 🛠️ 🟡   | 🛠️ 🟡 |
 
 
 <details>

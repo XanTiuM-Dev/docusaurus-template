@@ -24,11 +24,11 @@
 ### Précision et Coordonnées - Features
 | Feature                                 | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE    |
 | --------------------------------------- | ------- | --------------- | ------- | --------- | ------- |
-| Double précision native (transforms)    | ❌ 💀💀💀💀💀 | ✅               | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀 |
-| Large World Coordinates (LWC)           | ❌ 💀💀💀💀💀 | ✅               | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀 |
-| World Origin Rebasing intégré           | ❌ 💀💀💀💀  | ✅               | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀 |
-| Multi-origine simultanée                | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀         | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀   | ❌ 💀💀💀💀💀 |
-| Abstraction coordonnée globale / locale | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀          | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | ❌ 💀💀💀💀  |
+| Double précision native (transforms)    | ❌ 🔴 | ✅               | ❌ 🟠  | ❌ 🟠    | 🛠️ 🟡 |
+| Large World Coordinates (LWC)           | ❌ 🔴 | ✅               | ❌ 🟠  | ❌ 🟠    | 🛠️ 🟡 |
+| World Origin Rebasing intégré           | ❌ 🟠  | ✅               | 🛠️ 🟡 | 🛠️ 🟡   | 🛠️ 🟡 |
+| Multi-origine simultanée                | ❌ 🔴 | ❌ 🔴         | ❌ 🔴 | ❌ 🔴   | ❌ 🔴 |
+| Abstraction coordonnée globale / locale | ❌ 🔴 | ❌ 🟠          | ❌ 🟠  | ❌ 🟠    | ❌ 🟠  |
 
 <details>
     <summary>Double précision native</summary>
@@ -56,7 +56,7 @@
 
 <details>
     <summary>World Origin Rebasing intégré</summary>
-> Définition :**
+> **Définition :**
 > Mécanisme qui déplace l’origine du monde autour du joueur ou d’une zone active pour conserver la précision des floats.
 
 > **Importance :**
@@ -94,10 +94,10 @@
 ### Transforms & Scène - Features
 | Feature                              | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE     |
 | ------------------------------------ | ------- | --------------- | ------- | --------- | -------- |
-| Accès bas niveau aux transforms      | 🛠️ 💀💀💀 | ✅               | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀  |
-| Hiérarchie de scène modulaire        | ✅       | ✅               | ✅       | 🛠️ 💀💀    | 🛠️ 💀💀   |
-| Désynchronisation rendu / simulation | ❌ 💀💀💀💀  | 🛠️ 💀💀💀         | ❌ 💀💀💀   | ❌ 💀💀💀     | 🛠️ 💀💀💀  |
-| Support multi-échelle (cm → km → AU) | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀💀        | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀💀 |
+| Accès bas niveau aux transforms      | 🛠️ 🟡 | ✅               | 🛠️ 🟡 | 🛠️ 🟡   | 🛠️ 🟡  |
+| Hiérarchie de scène modulaire        | ✅       | ✅               | ✅       | 🛠️ 🟢    | 🛠️ 🟢   |
+| Désynchronisation rendu / simulation | ❌ 🟠  | 🛠️ 🟡         | ❌ 🟡   | ❌ 🟡     | 🛠️ 🟡  |
+| Support multi-échelle (cm → km → AU) | ❌ 🔴 | 🛠️ 🟠        | ❌ 🟠  | ❌ 🟠    | 🛠️ 🟠 |
 
 <details>
     <summary>Accès bas niveau aux transforms</summary>
@@ -151,10 +151,10 @@
 ### Architecture moteur & Extensibilité - Features
 | Feature                               | Godot           | Unreal Engine 5 | Unity  | CryEngine | O3DE    |
 | ------------------------------------- | --------------- | --------------- | ------ | --------- | ------- |
-| Extension C++ native officielle       | ✅ (GDExtension) | ✅               | 🛠️ 💀💀 | ✅         | ✅       |
-| Modification moteur réaliste          | ❌ 💀💀💀💀💀         | 🛠️ 💀💀💀         | ❌ 💀💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀 |
-| Séparation claire moteur / gameplay   | 🛠️ 💀💀          | ✅               | 🛠️ 💀💀 | 🛠️ 💀💀    | 🛠️ 💀💀  |
-| Support long terme (LTS / entreprise) | ❌ 💀💀💀           | ✅               | 🛠️ 💀💀 | ❌ 💀💀💀     | 🛠️ 💀💀  |
+| Extension C++ native officielle       | ✅ (GDExtension) | ✅               | 🛠️ 🟢 | ✅         | ✅       |
+| Modification moteur réaliste          | ❌ 🔴         | 🛠️ 🟡         | ❌ 🟠 | 🛠️ 🟡   | 🛠️ 🟡 |
+| Séparation claire moteur / gameplay   | 🛠️ 🟢          | ✅               | 🛠️ 🟢 | 🛠️ 🟢    | 🛠️ 🟢  |
+| Support long terme (LTS / entreprise) | ❌ 🟡           | ✅               | 🛠️ 🟢 | ❌ 🟡     | 🛠️ 🟢  |
 
 <details>
     <summary>Extension C++ native officielle</summary>
@@ -208,10 +208,10 @@
 ### Physique & Précision spatiale (fondations) - Features
 | Feature                       | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE     |
 | ----------------------------- | ------- | --------------- | ------- | --------- | -------- |
-| Physique double précision     | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀         | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀  |
-| Gravité locale variable       | 🛠️ 💀💀💀 | 🛠️ 💀💀💀         | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀  |
-| Référentiels multiples        | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀         | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀   | ❌ 💀💀💀💀💀  |
-| Physique custom multi-échelle | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀💀        | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀💀 |
+| Physique double précision     | ❌ 🔴 | 🛠️ 🟡         | ❌ 🟠  | ❌ 🟠    | 🛠️ 🟡  |
+| Gravité locale variable       | 🛠️ 🟡 | 🛠️ 🟡         | 🛠️ 🟡 | 🛠️ 🟡   | 🛠️ 🟡  |
+| Référentiels multiples        | ❌ 🔴 | ❌ 🔴         | ❌ 🔴 | ❌ 🔴   | ❌ 🔴  |
+| Physique custom multi-échelle | ❌ 🔴 | 🛠️ 🟠        | ❌ 🟠  | ❌ 🟠    | 🛠️ 🟠 |
 
 <details>
     <summary>Physique double précision</summary>

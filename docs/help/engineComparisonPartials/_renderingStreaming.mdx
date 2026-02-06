@@ -40,18 +40,18 @@ Tout les moteurs doivent réimplémenter ça au-dessus de ce qui existe déjà.
 | ---------------------------------------- | --------------------- | ---------------------- | -------------- | --------- | ------- |
 | Renderer moderne (Forward / Deferred)    | ✅ (Forward+ / Compat) | ✅ (Deferred / Forward) | ✅ (URP / HDRP) | ✅         | ✅       |
 | LOD mesh classique                       | ✅ (LODMesh)           | ✅                      | ✅              | ✅         | ✅       |
-| Occlusion culling                        | 🛠️ ⭐⭐ (basique)      | ✅                      | 🛠️ ⭐⭐         | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
-| HLOD automatique                         | ❌ ⭐⭐⭐                 | ✅                      | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| LOD massif type Nanite                   | ❌ ⭐⭐⭐⭐⭐               | ✅ (Nanite)             | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
-| Camera-relative rendering                | ❌ ⭐⭐⭐⭐                | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| LOD multi-échelle planétaire             | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
-| Streaming terrain continu                | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Planètes visibles à échelle astronomique | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
-| Transition espace ↔ atmosphère ↔ sol     | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
-| Shader-safe large coordinates            | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | 🛠️ ⭐⭐⭐ |
-| Masquage artefacts GPU float             | ❌ ⭐⭐⭐⭐                | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Culling hiérarchique multi-échelle       | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
-| Streaming visuel dépendant de l’échelle  | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+| Occlusion culling                        | 🛠️ 🟢(basique)      | ✅                      | 🛠️ 🟢        | 🛠️ 🟢   | 🛠️ 🟢 |
+| HLOD automatique                         | ❌ 🟡                | ✅                      | ❌ 🟡         | ❌ 🟡    | 🛠️ 🟡|
+| LOD massif type Nanite                   | ❌ 🔴              | ✅ (Nanite)             | ❌ 🟠        | ❌ 🟠   | ❌ 🟠 |
+| Camera-relative rendering                | ❌ 🟠               | 🛠️ 🟡               | ❌ 🟡         | ❌ 🟡    | 🛠️ 🟡|
+| LOD multi-échelle planétaire             | ❌ 🔴              | ❌ 🟠                | ❌ 🟠        | ❌ 🟠   | ❌ 🟠 |
+| Streaming terrain continu                | ❌ 🔴              | 🛠️ 🟡               | ❌ 🟠        | ❌ 🟡    | 🛠️ 🟡|
+| Planètes visibles à échelle astronomique | ❌ 🔴              | ❌ 🟠                | ❌ 🟠        | ❌ 🟠   | ❌ 🟠 |
+| Transition espace ↔ atmosphère ↔ sol     | ❌ 🔴              | ❌ 🟠                | ❌ 🟠        | ❌ 🟠   | ❌ 🟠 |
+| Shader-safe large coordinates            | ❌ 🔴              | 🛠️ 🟡               | ❌ 🟠        | ❌ 🟠   | 🛠️ 🟡|
+| Masquage artefacts GPU float             | ❌ 🟠               | 🛠️ 🟡               | ❌ 🟡         | ❌ 🟡    | 🛠️ 🟡|
+| Culling hiérarchique multi-échelle       | ❌ 🔴              | 🛠️ 🟡               | ❌ 🟡         | ❌ 🟡    | 🛠️ 🟡|
+| Streaming visuel dépendant de l’échelle  | ❌ 🔴              | ❌ 🟠                | ❌ 🟠        | ❌ 🟠   | ❌ 🟠 |
 
 
 <details>

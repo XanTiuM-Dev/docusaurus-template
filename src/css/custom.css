@@ -6,6 +6,18 @@
 
 /* You can override the default Infima variables here. */
 :root {
+  /* Custom Properties */
+  --xgs-color-primary: #ff0808;
+  --xgs-color-primary-dark: #ed0000;
+  --xgs-color-primary-darker: #e00000;
+  --xgs-color-primary-darkest: #b80000;
+  --xgs-color-primary-light: #ff2222;
+  --xgs-color-primary-lighter: #ff2f2f;
+  --xgs-color-primary-lightest: #ff5757;
+
+  --xgs-code-header-background: #222222;
+
+  /* Primary Colors */
   --ifm-color-primary: #ff0808;
   --ifm-color-primary-dark: #ed0000;
   --ifm-color-primary-darker: #e00000;
@@ -18,21 +30,37 @@
   /* Quote code bloc */
   /* --ifm-code-background: #151515;  */
 
-  /* Custom Properties */
-  --xgs-code-header-background: #222222;
+  /* Vertical line separator */
+  --ifm-toc-border-color: var(--xgs-color-primary-darkest);
+
+  --ifm-blockquote-border-color: var(--xgs-color-primary-darkest);
+
+  /* Alert */
+  --ifm-color-info-contrast-background: hsl(0, 0%, 17%);    /* rgb(25, 60, 71); */
+  --ifm-color-info-dark: rgb(212 76 76);                    /* rgb(76, 179, 212); */
+  --ifm-color-info-darker: rgb(201 71 71);                  /* rgb(71, 169, 201); */
+  --ifm-color-info-darkest: rgb(165 59 59);                 /* rgb(59, 139, 165); */
+  --ifm-color-info-light: rgb(239 110 110);                 /* rgb(110, 207, 239); */
+  --ifm-color-info-lighter: rgb(242 135 135);               /* rgb(135, 216, 242); */
+  --ifm-color-info-lightest: rgb(246 170 170);              /* rgb(170, 227, 246); */
 }
 
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #ff0808;
-  --ifm-color-primary-dark: #ed0000;
-  --ifm-color-primary-darker: #e00000;
-  --ifm-color-primary-darkest: #b80000;
-  --ifm-color-primary-light: #ff2222;
-  --ifm-color-primary-lighter: #ff2f2f;
-  --ifm-color-primary-lightest: #ff5757;
+  --ifm-color-primary: #cfcfcf;
+  --ifm-color-primary-dark: #bababa;
+  --ifm-color-primary-darker: #b0b0b0;
+  --ifm-color-primary-darkest: #919191;
+  --ifm-color-primary-light: #e4e4e4;
+  --ifm-color-primary-lighter: #eeeeee;
+  --ifm-color-primary-lightest: #ffffff;
+  
   --ifm-background-color: #1b1b1b;
+
+  --ifm-scrollbar-track-background-color: #444444;
+  --ifm-scrollbar-thumb-background-color: #686868;
+  --ifm-scrollbar-thumb-hover-background-color: #7a7a7a;
 }
 
 /**
@@ -55,6 +83,11 @@
 }
 .button.button--secondary {
   color: #e7e7e7;
+}
+@media (pointer: fine) {
+    .thin-scrollbar {
+        scrollbar-width: 5rem;
+    }
 }
 
 .prism-code {

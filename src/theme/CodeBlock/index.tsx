@@ -4,6 +4,7 @@ import type { Props } from '@theme/CodeBlock';
 
 // #TODO afficher le langage même sans title {DONE ?}
 // #TODO ajouter une icone par langage
+// #TODO check le scroll lateral quand une ligne est trop longue
 
 const mapping: Record<string, string> = {
   js: 'JavaScript',

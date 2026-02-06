@@ -36,18 +36,18 @@ Tout les moteurs doivent réimplémenter ça au-dessus de ce qui existe déjà.
 | Feature                                             | Godot                   | Unreal Engine 5             | Unity                  | CryEngine          | O3DE                          |
 | --------------------------------------------------- | ----------------------- | --------------------------- | ---------------------- | ------------------ | ----------------------------- |
 | Système entités de base (Node / Actor / Component)  | ✅                       | ✅                           | ✅                      | ✅                  | ✅                             |
-| Système de signaux / events                         | ✅ (Signals)             | 🛠️ ⭐⭐ (Delegates / Events) | 🛠️ ⭐⭐                 | 🛠️ ⭐⭐             | 🛠️ ⭐⭐                        |
-| Scripting multi-langage                             | ✅ (GDScript / C# / C++) | ✅ (C++ / Blueprint)         | ✅ (C#)                 | 🛠️ ⭐⭐ (C++ / Lua) | ✅ (C++ / Lua / Script Canvas) |
-| ECS natif performant                                | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | 🛠️ ⭐⭐⭐ (DOTS partiel) | ❌ ⭐⭐⭐⭐             | 🛠️ ⭐⭐⭐                       |
-| Simulation multi-échelle                            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
-| Migration d’entités entre bulles / zones            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
-| Gel / approximation des entités lointaines          | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
-| Physique orbitale custom                            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
-| Approximation lointaine (LOD logique / gameplay)    | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
-| Time scaling différentiel                           | ❌ ⭐⭐⭐⭐                  | ❌ ⭐⭐⭐                       | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | ❌ ⭐⭐⭐                         |
-| Séparation simulation / rendu                       | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
-| Systèmes gameplay avancés (Abilities, States, etc.) | ❌ ⭐⭐⭐                   | ✅ (GAS)                     | 🛠️ ⭐⭐                 | 🛠️ ⭐⭐             | 🛠️ ⭐⭐                        |
-| Replication gameplay intégrée                       | ❌ ⭐⭐⭐⭐⭐                 | ✅                           | 🛠️ ⭐⭐⭐                | 🛠️ ⭐⭐⭐            | 🛠️ ⭐⭐⭐                       |
+| Système de signaux / events                         | ✅ (Signals)             | 🛠️ 🟢(Delegates / Events) | 🛠️ 🟢                | 🛠️ 🟢            | 🛠️ 🟢                       |
+| Scripting multi-langage                             | ✅ (GDScript / C# / C++) | ✅ (C++ / Blueprint)         | ✅ (C#)                 | 🛠️ 🟢(C++ / Lua) | ✅ (C++ / Lua / Script Canvas) |
+| ECS natif performant                                | ❌ 🔴                | ❌ 🟠                     | 🛠️ 🟡(DOTS partiel) | ❌ 🟠            | 🛠️ 🟡                      |
+| Simulation multi-échelle                            | ❌ 🔴                | ❌ 🟠                     | ❌ 🟠                | ❌ 🟠            | ❌ 🟠                       |
+| Migration d’entités entre bulles / zones            | ❌ 🔴                | ❌ 🟠                     | ❌ 🟠                | ❌ 🟠            | ❌ 🟠                       |
+| Gel / approximation des entités lointaines          | ❌ 🟠                 | 🛠️ 🟡                    | ❌ 🟡                 | ❌ 🟡             | 🛠️ 🟡                      |
+| Physique orbitale custom                            | ❌ 🔴                | ❌ 🟠                     | ❌ 🟠                | ❌ 🟠            | ❌ 🟠                       |
+| Approximation lointaine (LOD logique / gameplay)    | ❌ 🟠                 | 🛠️ 🟡                    | ❌ 🟡                 | ❌ 🟡             | 🛠️ 🟡                      |
+| Time scaling différentiel                           | ❌ 🟠                 | ❌ 🟡                      | ❌ 🟡                 | ❌ 🟡             | ❌ 🟡                        |
+| Séparation simulation / rendu                       | ❌ 🟠                 | 🛠️ 🟡                    | ❌ 🟡                 | ❌ 🟡             | 🛠️ 🟡                      |
+| Systèmes gameplay avancés (Abilities, States, etc.) | ❌ 🟡                  | ✅ (GAS)                     | 🛠️ 🟢                | 🛠️ 🟢            | 🛠️ 🟢                       |
+| Replication gameplay intégrée                       | ❌ 🔴                | ✅                           | 🛠️ 🟡               | 🛠️ 🟡           | 🛠️ 🟡                      |
 
 <details>
     <summary>Système entités de base (Node / Actor / Component)</summary>
