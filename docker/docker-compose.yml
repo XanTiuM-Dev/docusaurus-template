@@ -1,0 +1,30 @@
+# Node.js version (should match .nvmrc)
+x-node-image: &node-image "node:22.20.0"
+
+services:
+  # Dev service for development work (lighter, no app by default)
+  dev:
+    image: *node-image
+    command: tail -f /dev/null # Keep container running for exec commands
+    ports:
+      - "${DOCS_PORT:-3000}:3000"
+    volumes:
+      - ..:/app
+      - app_cache:/app/.cache
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    env_file:
+      - ../.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+    networks:
+      - backend
+
+volumes:
+  app_cache:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge

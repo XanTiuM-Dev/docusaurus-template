@@ -1,0 +1,381 @@
+## Network & Backend
+
+### Network & Backend - Lecture rapide
+**Godot**
+> - Très bon pour du **multiplayer classique**, coop ou small-scale, API simple, rapide à prototyper.
+> - Mais **aucune base MMO** sérieuse, tout ce qui est autorité serveur, relevancy, sharding, migration **nécessitent une architecture serveur externe**.
+
+**Unreal Engine 5**
+> - Le moteur le plus avancé côté réseau gameplay (Replication Graph, relevancy, prediction, dedicated servers solides).
+> - Mais pas de server meshing natif. La migration live, l'autorité partagée, le backend persistant sont hors scope du moteur et **nécessite une architecture serveur externe**
+
+**Unity**
+> - Beaucoup d’outils réseau (Netcode, Mirror, NGO…), écosystème riche mais fragmenté.
+> - Mais pas de vision MMO intégrée, le scaling massif, sharding, persistence distribuée **nécessitent une architecture serveur externe**.
+
+**CryEngine**
+> - Networking historiquement pensé pour FPS / sessions, bon contrôle bas niveau.
+> - Peu d’outils modernes pour MMO et beaucoup de systèmes à reconstruire.
+
+**O3DE**
+> - Le plus orienté MMO / cloud-native sur le papier, architecture modulaire, séparation moteur / backend.
+> - Beaucoup de features sont framework-level, pas plug-and-play et une complexité très élevée.
+
+#### **Synthèse**
+Le réseau est encore plus critique que le rendu.
+
+Même si :
+- le moteur a un bon système de réplication,
+- le gameplay est bien structuré,
+- le serveur est dédié,
+
+Aucun moteur du marché ne fournit :
+- le server meshing
+- la migration live des joueurs
+- la persistence distribuée
+- l’autorité partagée multi-serveurs
+
+Tous les moteurs doivent :
+- découpler simulation ↔ rendu ↔ réseau
+- externaliser le backend (DB, services, orchestration)
+- gérer le monde comme un graphe de zones synchronisées
+
+Le moteur sert surtout de client + nœud de simulation locale, le vrai SC-like se joue hors moteur, dans l’architecture serveur.
+
+### Network & Backend - Features
+| Feature                                 | Godot  | Unreal Engine 5 | Unity  | CryEngine | O3DE    |
+| --------------------------------------- | ------ | --------------- | ------ | --------- | ------- |
+| Dedicated server robuste                | ❌ ⭐⭐   | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | ✅       |
+| High-level networking API               | ✅      | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| RPC / Replication de base               | ✅      | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| Network relevancy (par distance / zone) | ❌ ⭐⭐⭐  | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| Replication Graph / filtrage avancé     | ❌ ⭐⭐⭐  | ✅               | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐  |
+| Client-side prediction                  | 🛠️ ⭐⭐ | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| Rollback / reconciliation               | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐  |
+| Autorité serveur stricte                | ❌ ⭐⭐   | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | ✅       |
+| Autorité partagée / hybride             | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Migration live des joueurs              | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Server meshing                          | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Simulation shardée par zone             | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| Persistence serveur (DB)                | ❌ ⭐⭐   | ❌ ⭐⭐            | ❌ ⭐⭐   | ❌ ⭐⭐      | 🛠️ ⭐⭐  |
+| Persistence distribuée                  | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Backend micro-services                  | ❌ ⭐⭐   | ❌ ⭐⭐            | ❌ ⭐⭐   | ❌ ⭐⭐      | 🛠️ ⭐⭐  |
+| Synchronisation monde massif            | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+
+
+<details>
+    <summary>Dedicated server robuste</summary>
+> **Définition :**
+> Instance serveur sans rendu, exécutant uniquement la logique gameplay, la simulation physique, l’IA et la réplication réseau. Fonctionne de manière autoritaire et stable 24/7.
+
+> **Importance :**
+> C’est la **colonne vertébrale de tout MMO**. Sans serveur dédié :
+> - pas de sécurité
+> - pas de persistance fiable
+> - pas de scalabilité
+
+> **Context SC-like :**
+> Indispensable pour :
+> - simulation continue de l’univers
+> - joueurs qui se connectent / déconnectent sans reset
+> - monde vivant même sans joueurs présents
+</details>
+
+<details>
+    <summary>High-level networking API</summary>
+> **Définition :**
+> API abstraite pour envoyer des messages réseau, synchroniser des objets, appeler des fonctions à distance, ... sans gérer directement sockets, paquets, latence.
+
+> **Importance :**
+> Permet :
+> - prototypage rapide
+> - code gameplay lisible
+> - moins d’erreurs réseau
+
+> **Context SC-like :**
+> Utile au début, mais souvent insuffisant seul :
+> - trop générique
+> - pas pensé pour des milliers d’entités actives  
+> Sert de base, mais sera dépassé par des systèmes custom.
+</details>
+
+<details>
+    <summary>RPC / Replication de base</summary>
+> **Définition :**
+> Mécanisme permettant d’appeler une fonction à distance (RPC) et de synchroniser automatiquement des propriétés entre serveur et clients
+
+> **Importance :**
+> Fondation de toute synchronisation gameplay :
+> - positions
+> - états
+> - actions des joueurs
+
+> **Context SC-like :**
+> Fonctionne bien à petite et moyenne échelle, mais :
+> - explosion du coût réseau à grande distance
+> - nécessite un filtrage agressif  
+> Doit être complété par relevancy et LOD réseau.
+</details>
+
+<details>
+    <summary>Network relevancy (par distance / zone)</summary>
+> **Définition :**
+> Système déterminant quelles entités sont pertinentes pour un client donné selon :
+> - distance
+> - visibilité
+> - zone logique  
+> La relevancy est **obligatoire**, pas une optimisation.
+
+> **Importance :**
+> Sans relevancy :
+> - bande passante saturée
+> - CPU serveur explosé
+> - clients noyés de données inutiles
+
+> **Context SC-like :**
+> Fondamental pour :
+> - planète entière visible
+> - milliers d’objets actifs
+> - joueurs répartis dans l’espace
+</details>
+
+<details>
+    <summary>Replication Graph / filtrage avancé</summary>
+> **Définition :**
+> Structure hiérarchique (graphes, grilles, clusters) permettant de :
+> - router intelligemment les données réseau
+> - appliquer différents niveaux de réplication selon le contexte
+
+> **Importance :**
+> Permet :
+> - passage à l’échelle
+> - contrôle précis du coût réseau
+> - séparation logique des systèmes
+
+> **Context SC-like :**
+> Indispensable pour :
+> - gérer orbites, planètes, stations
+> - filtrer par échelle spatiale
+</details>
+
+<details>
+    <summary>Client-side prediction</summary>
+> **Définition :**
+> Technique où le client :
+> - prédit localement le résultat de ses actions
+> - affiche immédiatement le mouvement
+> - corrige ensuite selon la réponse serveur
+
+> **Importance :**
+> Essentiel pour :
+> - gameplay réactif
+> - FPS / pilotage / déplacements rapides
+
+> **Context SC-like :**
+> Crucial pour :
+> - dogfights spatiaux
+> - déplacements à grande vitesse
+> - combat temps réel
+</details>
+
+<details>
+    <summary>Rollback / reconciliation</summary>
+> **Définition :**
+> Mécanisme permettant :
+> - de corriger l’état client après réception de l’état serveur
+> - d’annuler et rejouer des frames si nécessaire
+
+> **Importance :**
+> Garantit :
+> - cohérence
+> - équité
+> - correction des erreurs de prediction
+
+> **Context SC-like :**
+> Indispensable avec :
+> - latence variable
+> - combat PVP
+> - interactions physiques complexes
+</details>
+
+<details>
+    <summary>Autorité serveur stricte</summary>
+> **Définition :**
+> Le serveur est la seule source de vérité :
+> - valide toutes les actions
+> - rejette les triches
+> - impose l’état final
+
+> **Importance :**
+> Base de la sécurité réseau :
+> - anti-cheat
+> - cohérence globale
+> - persistance fiable
+
+> **Context SC-like :**
+> Essentielle pour :
+> - économie persistante
+> - PVP massif
+> - interactions systémiques
+</details>
+
+<details>
+    <summary>Autorité partagée / hybride</summary>
+> **Définition :**
+> Modèle où :
+> - certaines décisions sont prises côté client
+> - le serveur arbitre ou valide a posteriori
+
+> **Importance :**
+> Peut réduire :
+> - latence perçue
+> - charge serveur
+
+> **Context SC-like :**
+> Très risqué :
+> - complexité énorme
+> - surface de triche accrue
+</details>
+
+<details>
+    <summary>Migration live des joueurs</summary>
+> **Définition :**
+> Capacité à transférer un joueur :
+> - d’un serveur à un autre
+> - sans déconnexion
+> - sans chargement visible
+
+> **Importance :**
+> Nécessaire pour :
+> - monde sans frontières
+> - scaling dynamique
+
+> **Context SC-like :**
+> Clé pour :
+> - traverser des systèmes
+> - server meshing
+</details>
+
+<details>
+    <summary>Server meshing</summary>
+> **Définition :**
+> Architecture où :
+> - plusieurs serveurs coopèrent
+> - chacun simule une partie du monde
+> - échangent entités et données en temps réel
+
+> **Importance :**
+> Seule solution viable pour :
+> - monde massif
+> - forte densité de joueurs
+> - simulation continue
+
+> **Context SC-like :**
+> C’est le cœur du rêve Star Citizen.
+</details>
+
+<details>
+    <summary>Simulation shardée par zone</summary>
+> **Définition :**
+> Découpage du monde en :
+> - zones simulées indépendamment
+> - éventuellement par serveurs différents
+
+> **Importance :**
+> Permet :
+> - parallélisation
+> - réduction de charge
+> - contrôle de la simulation
+
+> **Context SC-like :**
+> Version simplifiée du server meshing :
+> - zones orbitales
+> - surfaces planétaires
+</details>
+
+<details>
+    <summary>Persistence serveur (DB)</summary>
+> **Définition :**
+> Stockage des données joueurs, objets, états du monde, ... dans une base de données.
+
+> **Importance :**
+> Indispensable pour :
+> - MMO persistant
+> - économie
+> - progression
+
+> **Context SC-like :**
+> Tout doit persister :
+> - cargo dans l’espace
+> - vaisseaux abandonnés
+> - stations endommagées
+</details>
+
+<details>
+    <summary>Persistence distribuée</summary>
+> **Définition :**
+> Système où :
+> - plusieurs bases / services
+> - partagent l’état du monde
+> - tolèrent pannes et latence
+
+> **Importance :**
+> Permet :
+> - haute disponibilité
+> - scalabilité mondiale
+
+> **Context SC-like :**
+> Nécessaire pour :
+> - univers vivant
+> - uptime permanent
+</details>
+
+<details>
+    <summary>Backend micro-services</summary>
+> **Définition :**
+> Architecture backend composée de :
+> - services indépendants
+> - communication par API / events
+> - déploiement isolé
+
+> **Importance :**
+> Permet :
+> - évolution indépendante
+> - maintenance
+> - scaling ciblé
+
+> **Context SC-like :**
+> Indispensable pour :
+> - économie
+> - matchmaking
+> - persistance
+> - analytics
+</details>
+
+<details>
+    <summary>Synchronisation monde massif</summary>
+> **Définition :**
+> Capacité à maintenir cohérence globale, continuité temporelle et synchronisation partielle entre milliers d’entités et joueurs.
+
+> **Importance :**
+> Sans ça :
+> - désynchronisations
+> - bugs visibles
+> - incohérences critiques
+
+> **Context SC-like :**
+> C’est le problème ultime :
+> - univers en mouvement
+> - échelles multiples
+> - latence réseau
+</details>
+
+#### **Conclusion**
+Un SC-like n’est pas un problème de moteur réseau. C’est un problème d’architecture distribuée.
+
+Les moteurs aident pour :
+- réplication locale
+- prediction
+- gameplay immédiat
+
+Mais le vrai MMO se construit hors moteur.

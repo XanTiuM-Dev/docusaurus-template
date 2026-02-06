@@ -1,0 +1,381 @@
+## Tooling & Pipeline
+
+### Tooling & Pipeline - Lecture rapide
+**Godot**
+> - Éditeur ouvert, modifiable, scriptable, excellent pour créer des outils maison et très bon contrôle de la pipeline si les outils sont fait maison.
+> - Mais **Aucun outil pensé pour le world building massif**. Tout ce qui est planétaire, multi-origine, streaming visuel, debug MMO est à créer. Bien pour une équipe tech, pas pour du contenu massif sans R&D lourde.
+
+**Unreal Engine 5**
+> - Le moteur avec **le meilleur outillage natif** : World Partition, profilers, Python, tooling AAA, ...
+> - Mais Aucun outil réellement pensé pour :planètes complètes, server meshing, multi-origines visibles, ...
+
+**Unity**
+> - Pipeline DCC solide et beaucoup d'outils tiers.
+> - Mais éditeur peu adapté au world streaming extrême et nécessite beaucoup de tooling custom. Possible mais pipeline fragile à grande échelle.
+
+**CryEngine**
+> - Historiquement bon pour le world building FPS.
+> - Mais tooling vieillissant.
+
+**O3DE**
+> - Vision orientée engine + outils + cloud et architecture plus modulaire.
+> - Beaucoup de choses sont framework-level, pas prêtes à l’emploi.
+
+#### **Synthèse**
+Un SC-like ne se casse pas sur le moteur, il se casse sur les outils.
+
+Même si le rendu fonctionne, la simulation est correcte, le réseau tient, sans outils adaptés, la production devient impossible.
+
+Tous les moteurs doivent :
+- développer un éditeur planétaire custom
+- créer des outils de debug multi-échelle
+- visualiser le streaming, le réseau, les shards
+- automatiser le bake procédural
+
+Star Citizen est autant un projet d’outillage qu’un projet de jeu.
+
+### Tooling & Pipeline - Features
+| Feature                                 | Godot  | Unreal Engine 5 | Unity  | CryEngine | O3DE   |
+| --------------------------------------- | ------ | --------------- | ------ | --------- | ------ |
+| Éditeur visuel intégré                  | ✅      | ✅               | ✅      | ✅         | ✅      |
+| Éditeur open-source                     | ✅      | ✅               | ❌      | 🛠️ ⭐⭐    | ✅      |
+| Extensibilité éditeur (tools custom)    | 🛠️ ⭐⭐ | ✅               | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐ |
+| Script éditeur (Python / équivalent)    | 🛠️ ⭐⭐ | ✅               | 🛠️ ⭐⭐ | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Import pipeline (DCC → moteur)          | 🛠️ ⭐⭐ | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐ |
+| World building à grande échelle         | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| World Partition / équivalent            | ❌ ⭐⭐⭐  | ✅               | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Éditeur planétaire custom               | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | ❌ ⭐⭐⭐  |
+| Outils de génération procédurale lourde | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Bake procédural planète                 | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | ❌ ⭐⭐⭐  |
+| Debug multi-origine / LWC               | ❌ ⭐⭐⭐  | ❌ ⭐⭐            | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | ❌ ⭐⭐⭐  |
+| Visualisation streaming monde           | ❌ ⭐⭐⭐  | 🛠️ ⭐⭐          | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Visualisation réseau / shards           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐           | ❌ ⭐⭐⭐  | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Profiler rendu intégré                  | 🛠️ ⭐⭐ | ✅               | ✅      | 🛠️ ⭐⭐    | 🛠️ ⭐⭐ |
+| Profiler réseau                         | ❌ ⭐⭐⭐  | ✅               | 🛠️ ⭐⭐ | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐ |
+| Pipeline automatisation (CI / build)    | 🛠️ ⭐⭐ | 🛠️ ⭐⭐          | 🛠️ ⭐⭐ | 🛠️ ⭐⭐    | 🛠️ ⭐⭐ |
+
+
+<details>
+    <summary>Éditeur visuel intégré</summary>
+> **Définition :**
+> Interface graphique permettant de placer des objets, éditer des scènes, configurer assets, scripts et paramètres sans passer par du code brut.
+
+> **Importance :**
+> C’est l’outil quotidien des level designers, artistes, technical artists.  
+> Sans éditeur solide → production lente et erreurs fréquentes.
+
+> **Context SC-like :**
+> Indispensable, mais largement insuffisant seul :
+> - l’échelle dépasse largement un éditeur “classique”
+> - il devient un shell pour des outils spécialisés.
+</details>
+
+<details>
+    <summary>Éditeur open-source</summary>
+> **Définition :**
+> Éditeur dont le code source est accessible, modifiable et forkable.
+
+> **Importance :**
+> Permet :
+> - correction de bugs profonds
+> - adaptation à des besoins non prévus
+> - intégration de tooling bas niveau
+
+> **Context SC-like :**
+> Très précieux pour :
+> - intégrer multi-origine
+> - visualiser des coordonnées hiérarchiques
+> - adapter l’éditeur à des concepts planétaires  
+> Mais nécessite une équipe moteur.
+</details>
+
+<details>
+    <summary>Extensibilité éditeur (tools custom)</summary>
+> **Définition :**
+> Capacité à ajouter fenêtres, gizmos, workflows, outils spécialisés, ... directement dans l’éditeur.
+
+> **Importance :**
+> Sans extensibilité :
+> - workflows cassés
+> - outils externes incohérents
+> - perte de productivité
+
+> **Context SC-like :**
+> Absolument critique :
+> - édition planétaire
+> - debug streaming
+> - visualisation réseau  
+> Un SC-like est **impossible sans tools custom**.
+</details>
+
+<details>
+    <summary>Script éditeur (Python / équivalent)</summary>
+> **Définition :**
+> Langage permettant :
+> - automatisation
+> - batch processing
+> - génération de contenu
+> - contrôle de l’éditeur
+
+> **Importance :**
+> Permet :
+> - pipelines non destructifs
+> - automatisation massive
+> - réduction des erreurs humaines
+
+> **Context SC-like :**
+> Indispensable pour :
+> - générer des milliers de chunks
+> - itérer rapidement
+> - connecter DCC ↔ moteur  
+> Sans scripting editeur, la prod explose.
+</details>
+
+<details>
+    <summary>Import pipeline (DCC → moteur)</summary>
+> **Définition :**
+> Chaîne d’outils reliant : Blender, Houdini, Substance, etc... au moteur, avec gestion :
+> - des formats
+> - des métadonnées
+> - des LOD
+> - ...
+
+> **Importance :**
+> Un mauvais pipeline =
+> - assets cassés
+> - temps perdu
+> - incohérences visuelles
+
+> **Context SC-like :**
+> Encore plus critique :
+> - assets multi-échelle
+> - LOD multiples
+> - versions planétaires  
+> Doit être hautement automatisé.
+</details>
+
+<details>
+    <summary>World building à grande échelle</summary>
+> **Définition :**
+> Capacité à éditer, visualiser, gérer, des mondes de taille gigantesque sans surcharge.
+
+> **Importance :**
+> Sans ça :
+> - éditeur inutilisable
+> - crashes
+> - lenteurs extrêmes
+
+> **Context SC-like :**
+> Fondamental pour :
+> - systèmes entiers
+> - planètes complètes
+> - zones orbitales
+</details>
+
+<details>
+    <summary>World Partition / équivalent</summary>
+> **Définition :**
+> Système découpant automatiquement le monde en :
+> - cellules
+> - chunks
+> - régions streamées dynamiquement.
+
+> **Importance :**
+> Permet :
+> - édition collaborative
+> - streaming automatique
+> - réduction mémoire
+
+> **Context SC-like :**
+> Indispensable pour :
+> - monde sans chargement
+> - itération rapide
+> - gestion du contenu massif
+</details>
+
+<details>
+    <summary>Éditeur planétaire custom</summary>
+> **Définition :**
+> Outil dédié permettant :
+> - édition de planètes complètes
+> - gestion de sphères, patches, biomes
+> - contrôle multi-échelle
+> - ...
+
+> **Importance :**
+> Aucun éditeur généraliste n’est prévu pour :
+> - des sphères de milliers de km
+> - plusieurs niveaux de détail simultanés
+
+> **Context SC-like :**
+> C’est le cœur du tooling SC :
+> - altitude → sol → espace
+> - biomes procéduraux
+> - transitions seamless  
+> **À développer obligatoirement**.
+</details>
+
+<details>
+    <summary>Outils de génération procédurale lourde</summary>
+> **Définition :**
+> Systèmes capables de générer automatiquement des terrains, des biomes, des routes, des structures, ... à très grande échelle.
+
+> **Importance :**
+> Sans procédural :
+> - production impossible
+> - coût humain démesuré
+
+> **Context SC-like :**
+> Indispensable pour :
+> - dizaines de planètes
+> - diversité
+> - cohérence globale  
+> Généralement basé sur Houdini / tools maison.
+</details>
+
+<details>
+    <summary>Bake procédural planète</summary>
+> **Définition :**
+> Processus transformant des données procédurales en assets exploitables :
+> - meshes
+> - heightmaps
+> - données de streaming
+> - ...
+
+> **Importance :**
+> Permet :
+> - performances stables
+> - contenu versionné
+> - debug reproductible
+
+> **Context SC-like :**
+> Crucial pour :
+> - éviter le procédural runtime excessif
+> - maîtriser mémoire et réseau
+</details>
+
+<details>
+    <summary>Debug multi-origine / LWC</summary>
+> **Définition :**
+> Outils permettant de visualiser origines locales, les offsets globaux, les erreurs de précision, ...
+
+> **Importance :**
+> Sans debug :
+> - bugs invisibles
+> - jitter
+> - erreurs cumulatives
+
+> **Context SC-like :**
+> Fondamental avec :
+> - double précision
+> - floating origin
+> - multi-référentiels
+</details>
+
+<details>
+    <summary>Visualisation streaming monde</summary>
+> **Définition :**
+> Outils affichant :
+> - ce qui est chargé
+> - ce qui est streamé
+> - pourquoi / quand
+
+> **Importance :**
+> Permet :
+> - optimisation mémoire
+> - suppression des stutters
+> - contrôle du LOD
+
+> **Context SC-like :**
+> Indispensable pour :
+> - streaming multi-échelle
+> - transitions espace ↔ sol
+</details>
+
+<details>
+    <summary>Visualisation réseau / shards</summary>
+> **Définition :**
+> Outils montrant :
+> - quels serveurs simulent quoi
+> - quelles entités sont où
+> - flux réseau actifs
+
+> **Importance :**
+> Essentiel pour :
+> - debug MMO
+> - équilibrage charge
+> - détection des goulets
+
+> **Context SC-like :**
+> Critique pour :
+> - server meshing
+> - migration live
+> - sharding dynamique
+</details>
+
+<details>
+    <summary>Profiler rendu intégré</summary>
+> **Définition :**
+> Outil mesurant les information GPU, draw calls, shaders, overdraw, ...
+
+> **Importance :**
+> Permet :
+> - optimisation continue
+> - stabilité des performances
+
+> **Context SC-like :**
+> Crucial pour :
+> - transitions multi-échelle
+> - masquage artefacts GPU
+> - LOD planétaires
+</details>
+
+<details>
+    <summary>Profiler réseau</summary>
+> **Définition :**
+> Outil mesurant la bande passante, la latence, la fréquence des messages, ...
+
+> **Importance :**
+> Sans profiler :
+> - réseau ingérable
+> - coûts imprévisibles
+
+> **Context SC-like :**
+> Indispensable pour :
+> - relevancy
+> - replication graph
+> - scaling massif
+</details>
+
+<details>
+    <summary>Pipeline automatisation (CI / build)</summary>
+> **Définition :**
+> Chaîne automatisée pour les build serveur / client, les tests, le déploiement.
+
+> **Importance :**
+> Sans CI :
+> - erreurs humaines
+> - builds instables
+> - lenteur de prod
+
+> **Context SC-like :**
+> Obligatoire pour :
+> - multi-plateformes
+> - mises à jour fréquentes
+> - backend distribué
+</details>
+
+#### **Conclusion**
+Un Star Citizen-like est avant tout un projet d’outillage.
+
+Le moteur :
+- affiche
+- simule
+- joue
+
+Mais les outils :
+- rendent le projet possible
+- absorbent la complexité
+- sauvent la production
+
+Si 40–60 % du temps n'est pas prévu en tooling, le projet est irréalisable.

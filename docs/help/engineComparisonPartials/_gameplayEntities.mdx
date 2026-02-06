@@ -1,0 +1,214 @@
+## Gameplay & Entités
+
+### Gameplay & Entités - Lecture rapide
+**Godot**
+> - Très bon pour un gameplay local et le prototypage
+> - Très mauvais pour la simulation multi-échelle, le gameplay MMO et la performance ECS.
+
+**Unreal Engine 5**
+> - Très fort sur le gameplay "classique AAA" grâce aux Actor / Component, au GAS (Gameplay Ability System) et à son système de réplication mature.
+> - Mais n'a aucune notion native de simulation multi-échelle, pas de migration d'entités entre bulles et pas de logique orbitale.
+
+**Unity**
+> - DOTS prométteur mais pas assez mature pour un MMO spatial et a certaines incohérences avec MonoBehaviour.
+> - Beaucoup de systèmes de gameplay à écrire.
+
+**CryEngine**
+> - Solide historiquement.
+> - Architecture vieillissante et peu de support moderne pour MMO / multi-échelle.
+
+**O3DE**
+> - Architecture modulaire, ECS partiel et en cours de développement.
+> - Meilleure base open-source pour ECS + MMO.
+
+#### **Synthèse**
+Aucun moteur du marché n'a de "Gameplay SC-like" prêt à l'emploi.
+Star Citizen possède:
+- un Entity Graph custom
+- des bulles de simulation
+- du time scaling différentiel
+- une approximation logique distante
+- une physique orbitale maison
+
+Tout les moteurs doivent réimplémenter ça au-dessus de ce qui existe déjà.
+
+### Gameplay & Entités - Features
+| Feature                                             | Godot                   | Unreal Engine 5             | Unity                  | CryEngine          | O3DE                          |
+| --------------------------------------------------- | ----------------------- | --------------------------- | ---------------------- | ------------------ | ----------------------------- |
+| Système entités de base (Node / Actor / Component)  | ✅                       | ✅                           | ✅                      | ✅                  | ✅                             |
+| Système de signaux / events                         | ✅ (Signals)             | 🛠️ ⭐⭐ (Delegates / Events) | 🛠️ ⭐⭐                 | 🛠️ ⭐⭐             | 🛠️ ⭐⭐                        |
+| Scripting multi-langage                             | ✅ (GDScript / C# / C++) | ✅ (C++ / Blueprint)         | ✅ (C#)                 | 🛠️ ⭐⭐ (C++ / Lua) | ✅ (C++ / Lua / Script Canvas) |
+| ECS natif performant                                | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | 🛠️ ⭐⭐⭐ (DOTS partiel) | ❌ ⭐⭐⭐⭐             | 🛠️ ⭐⭐⭐                       |
+| Simulation multi-échelle                            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
+| Migration d’entités entre bulles / zones            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
+| Gel / approximation des entités lointaines          | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
+| Physique orbitale custom                            | ❌ ⭐⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐                      | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐             | ❌ ⭐⭐⭐⭐                        |
+| Approximation lointaine (LOD logique / gameplay)    | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
+| Time scaling différentiel                           | ❌ ⭐⭐⭐⭐                  | ❌ ⭐⭐⭐                       | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | ❌ ⭐⭐⭐                         |
+| Séparation simulation / rendu                       | ❌ ⭐⭐⭐⭐                  | 🛠️ ⭐⭐⭐                     | ❌ ⭐⭐⭐                  | ❌ ⭐⭐⭐              | 🛠️ ⭐⭐⭐                       |
+| Systèmes gameplay avancés (Abilities, States, etc.) | ❌ ⭐⭐⭐                   | ✅ (GAS)                     | 🛠️ ⭐⭐                 | 🛠️ ⭐⭐             | 🛠️ ⭐⭐                        |
+| Replication gameplay intégrée                       | ❌ ⭐⭐⭐⭐⭐                 | ✅                           | 🛠️ ⭐⭐⭐                | 🛠️ ⭐⭐⭐            | 🛠️ ⭐⭐⭐                       |
+
+<details>
+    <summary>Système entités de base (Node / Actor / Component)</summary>
+> **Définition :**
+> Modèle fondamental de représentation des objets du jeu. Une entité est soit un **nœud** (Godot), soit un **acteur** (UE), composé de **composants** qui portent données et comportements.
+
+> **Importance :**
+> Détermine la **flexibilité**, la performance et la capacité à gérer un très grand nombre d’objets actifs ou partiellement actifs.
+
+> **Context SC-like :**
+> Doit supporter des millions d’entités logiques (vaisseaux, IA, projectiles, stations) avec différents niveaux de simulation.
+</details>
+
+<details>
+    <summary>Système de signaux / events</summary>
+> **Définition :**
+> Mécanisme de communication asynchrone entre entités (events, delegates, signals), sans dépendance directe.
+
+> **Importance :**
+> Essentiel pour découpler les systèmes gameplay et éviter une logique monolithique.
+
+> **Context SC-like :**
+> Permet de déclencher des transitions de simulation (entrée/sortie de bulles, LOD logique) sans surcharge de dépendances.
+</details>
+
+<details>
+    <summary>Scripting multi-langage</summary>
+> **Définition :**
+> Capacité à écrire du gameplay en plusieurs langages (C++, scripting haut niveau, visuel).
+
+> **Importance :**
+> Permet d’équilibrer **rapidité de développement** et **performance critique**.
+
+> **Context SC-like :**
+> Le cœur (simulation, physique) doit être en C++, tandis que les mécaniques secondaires peuvent être scriptées.
+</details>
+
+<details>
+    <summary>ECS natif performant</summary>
+> **Définition :**
+> Architecture **Entity-Component-System** orientée données (data-oriented), conçue pour le parallélisme et les gros volumes d'entités.
+
+> **Importance :**
+> Indispensable pour simuler **des dizaines ou centaines de milliers d'entités** efficacement.
+
+> **Context SC-like :**
+> Presque obligatoire pour gérer IA lointaine, trafic spatial, projectiles, économie, etc.
+</details>
+
+<details>
+    <summary>Simulation multi-échelle</summary>
+> **Définition :**
+> Capacité à simuler des entités à **différentes résolutions temporelles et spatiales** selon leur distance ou importance.
+
+> **Importance :**
+> Permet de garder des performances stables dans un monde gigantesque.
+
+> **Context SC-like :**
+> Un vaisseau proche est simulé finement, un vaisseau à 1 Unité astronomique est simulé de façon approximative.
+</details>
+
+<details>
+    <summary>Migration d’entités entre bulles / zones</summary>
+> **Définition :**
+> Transfert dynamique d’une entité entre différentes **zones de simulation** (ou serveurs) sans interruption.
+
+> **Importance :**
+> Fondamental pour le seamless et le MMO distribué.
+
+> **Context SC-like :**
+> Un joueur quitte une planète, entre dans l’espace, rejoint un système voisin → tout doit migrer proprement.
+</details>
+
+<details>
+    <summary>Gel / approximation des entités lointaines</summary>
+> **Définition :**
+> Mise en pause complète ou partielle de la simulation d’entités distantes, remplacée par une approximation.
+
+> **Importance :**
+> Réduit drastiquement la charge CPU.
+
+> **Context SC-like :**
+> Impossible de simuler chaque entité en temps réel à l’échelle d’un système stellaire.
+</details>
+
+<details>
+    <summary>Physique orbitale custom</summary>
+> **Définition :**
+> Implémentation d’une physique spécifique pour les orbites, trajectoires spatiales, influences gravitationnelles multiples.
+
+> **Importance :**
+> Les moteurs standards sont conçus pour la physique locale (FPS, véhicules), pas pour l’astronomie.
+
+> **Context SC-like :**
+> Indispensable pour planètes, stations, vaisseaux en orbite crédible.
+</details>
+
+<details>
+    <summary>Approximation lointaine (LOD logique / gameplay)</summary>
+> **Définition :**
+> Simplification des règles gameplay (IA, collisions, comportements) selon la distance.
+
+> **Importance :**
+> Permet de conserver la cohérence du monde sans simuler chaque détail.
+
+> **Context SC-like :**
+> Une bataille lointaine est simulée par statistiques, pas par projectiles réels.
+</details>
+
+<details>
+    <summary>Time scaling différentiel</summary>
+> **Définition :**
+> Application de vitesses de temps différentes selon les zones ou niveaux de simulation.
+
+> **Importance :**
+> Optimise la simulation tout en gardant une continuité perçue.
+
+> **Context SC-like :**
+> Le combat proche est en temps réel, l’économie galactique avance en pas larges.
+</details>
+
+<details>
+    <summary>Séparation simulation / rendu</summary>
+> **Définition :**
+> Architecture où la simulation (logique, physique) et le rendu graphique sont désynchronisés.
+
+> **Importance :**
+> Évite jitter et erreurs de précision, améliore stabilité et performance.
+
+> **Context SC-like :**
+> Simulation peut tourner à fréquence variable, rendu reste fluide.
+</details>
+
+<details>
+    <summary>Systèmes gameplay avancés (Abilities, States, etc.)</summary>
+> **Définition :**
+> Frameworks dédiés pour gérer compétences, états, effets temporaires et interactions complexes.
+
+> **Importance :**
+> Accélère le développement et standardise le gameplay.
+
+> **Context SC-like :**
+> Utile pour gérer compétences de vaisseaux, modules, buffs, systèmes de combat.
+</details>
+
+<details>
+    <summary>Replication gameplay intégrée</summary>
+> **Définition :**
+> Système moteur pour synchroniser automatiquement les états gameplay entre serveur et clients.
+
+> **Importance :**
+> Essentiel pour un MMO stable et sécurisé.
+
+> **Context SC-like :**
+> Réplication fine, prédiction et correction réseau sont obligatoires pour le combat spatial.
+</details>
+
+#### **Conclusion**
+Un "gameplay SC-like" nécessite une architecture sur mesure, pas une simple combinaison de features moteur.  
+Même Unreal Engine 5, pourtant le plus avancé côté gameplay nécessite:
+- un **framework ECS maison**
+- une **gestion multi-échelle**
+- une **logique de bulle MMO**
+- une **physique orbitale custom**

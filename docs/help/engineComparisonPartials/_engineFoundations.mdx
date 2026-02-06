@@ -1,0 +1,262 @@
+## Fondations moteur
+
+### Engine Fondation - Lecture Rapide
+**Godot**
+> - Aucune fonction requise fournie -> tout est à écrire ou refondre  
+> - Excellent moteur, mais pas le bon outil pour ce problème
+
+**Unreal Engine 5**
+> - Seul moteur avec la double précision native, LWC officiel et le world origin rebasing supporté  
+> - Mais pas pensé pour orbital / multi-référentiel
+
+**Unity**
+> - Le moteur est **fermé** (les sources ne sont pas disponible au public)  
+> - Le moteur est **float-centric** mais des workarounds restent possibles mais lourds
+
+**CryEngine**
+> - Le moteur est **float-centric** mais des workarounds restent possibles mais lourds
+
+**O3DE**
+> - Moteur en source ouverte avec une architecture morderne  
+> - Mais il est encore jeune, le LWC est partiel
+
+
+### Précision et Coordonnées - Features
+| Feature                                 | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE    |
+| --------------------------------------- | ------- | --------------- | ------- | --------- | ------- |
+| Double précision native (transforms)    | ❌ 💀💀💀💀💀 | ✅               | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀 |
+| Large World Coordinates (LWC)           | ❌ 💀💀💀💀💀 | ✅               | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀 |
+| World Origin Rebasing intégré           | ❌ 💀💀💀💀  | ✅               | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀 |
+| Multi-origine simultanée                | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀         | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀   | ❌ 💀💀💀💀💀 |
+| Abstraction coordonnée globale / locale | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀          | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | ❌ 💀💀💀💀  |
+
+<details>
+    <summary>Double précision native</summary>
+> **Définition :**
+> Capacité du moteur à stocker les positions, rotations et échelles avec 64 bits (double) au lieu de 32 bits (float).
+
+> **Importance :**
+> Sur des distances planétaires ou stellaires, les floats 32 bits deviennent imprécis, causant des jitter / décalages / artefacts physiques à grande échelle.
+
+> **Contexte SC-like :**
+> Essentiel pour gérer des positions allant de centimètres sur un vaisseau à des distances astronomiques.
+</details>
+
+<details>
+    <summary>Large World Coordinates (LWC)</summary>
+> **Définition :**
+> Système intégré permettant de travailler avec des coordonnées extrêmement grandes sans perte de précision.
+
+> **Importance :**
+> Évite le besoin de “floating origin” manuel pour tout objet distant.
+
+> **Contexte SC-like :**
+> Facilite les déplacements seamless entre planètes et systèmes stellaires sans artefacts.
+</details>
+
+<details>
+    <summary>World Origin Rebasing intégré</summary>
+> Définition :**
+> Mécanisme qui déplace l’origine du monde autour du joueur ou d’une zone active pour conserver la précision des floats.
+
+> **Importance :**
+> Si le moteur n’a pas de double précision, le rebasing permet de garder les objets proches de zéro dans les calculs internes.
+
+> **Contexte SC-like :**
+> Indispensable pour les moteurs float-centric (Godot, Unity, CryEngine).
+</details>
+
+<details>
+    <summary>Multi-origine simultanée</summary>
+> **Définition :**
+> Possibilité de gérer plusieurs systèmes de coordonnées indépendants et simultanés, pour différents clusters du monde (ex : planètes séparées, vaisseaux éloignés).
+
+> **Importance :**
+> Simplifie la simulation multi-planètes et MMO sans déplacer tout le monde autour d’un seul floating origin.
+
+> **Contexte SC-like :**
+> Critique pour un vrai univers cohérent, très complexe à implémenter dans la majorité des moteurs.
+</details>
+
+<details>
+    <summary>Abstraction coordonnée globale / locale</summary>
+> **Définition :**
+> Architecture logicielle qui sépare coordonnées locales (position dans un objet/planète) et coordonnées globales (position dans la galaxie).
+
+> **Importance :**
+> Nécessaire pour calculer la physique, la navigation et le rendu sans dépendre des limites float.
+
+> **Contexte SC-like :**
+> Facilite l’intégration de multiples zones et échelles.
+</details>
+
+
+### Transforms & Scène - Features
+| Feature                              | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE     |
+| ------------------------------------ | ------- | --------------- | ------- | --------- | -------- |
+| Accès bas niveau aux transforms      | 🛠️ 💀💀💀 | ✅               | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀  |
+| Hiérarchie de scène modulaire        | ✅       | ✅               | ✅       | 🛠️ 💀💀    | 🛠️ 💀💀   |
+| Désynchronisation rendu / simulation | ❌ 💀💀💀💀  | 🛠️ 💀💀💀         | ❌ 💀💀💀   | ❌ 💀💀💀     | 🛠️ 💀💀💀  |
+| Support multi-échelle (cm → km → AU) | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀💀        | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀💀 |
+
+<details>
+    <summary>Accès bas niveau aux transforms</summary>
+> **Définition :**
+> Possibilité de manipuler directement les matrices, vecteurs et quaternions de position, rotation et scale, **hors abstractions moteur**.
+
+> **Importance :**
+> Pour corriger précision, faire du multi-origine ou adapter la physique à l’échelle astronomique.
+
+> **Context SC-like :**
+> Fondamental pour personnaliser la précision et l’update des objets à grande distance.
+</details>
+
+<details>
+    <summary>Hiérarchie de scène modulaire</summary>
+> **Définition :**
+> Structure en **arbre de scènes/nœuds** permettant d’imbriquer des objets et sous-scènes de manière flexible.
+
+> **Importance :**
+> Permet de **décomposer un monde massif** (planète → région → zone → bâtiment → objet) et de gérer le streaming local.
+
+> **Context SC-like :**
+> Clé pour gérer des planètes entières et des zones instanciées.
+</details>
+
+<details>
+    <summary>Désynchronisation rendu / simulation</summary>
+> **Définition :**
+> Capacité de **séparer le rendu graphique de la simulation physique et gameplay**, pour travailler avec différents niveaux de précision ou de fréquence.
+
+> **Importance :**
+> Permet de **réduire le jitter ou le lag visuel** à grande échelle.
+
+> **Context SC-like :**
+> Critique quand les distances sont astronomiques et que la physique ne peut pas être calculée à la même fréquence que le rendu.
+</details>
+
+<details>
+    <summary>Support multi-échelle (cm → km → AU)</summary>
+> **Définition :**
+> Capacité à **simuler et représenter des objets sur des ordres de grandeur très différents** dans le même monde.
+
+> **Importance :**
+> Nécessaire pour gérer des vaisseaux, planètes, systèmes stellaires dans un seul univers.
+
+> **Context SC-like :**
+> Essentiel pour transitions seamless espace / atmosphère / surface planétaire.
+</details>
+
+
+### Architecture moteur & Extensibilité - Features
+| Feature                               | Godot           | Unreal Engine 5 | Unity  | CryEngine | O3DE    |
+| ------------------------------------- | --------------- | --------------- | ------ | --------- | ------- |
+| Extension C++ native officielle       | ✅ (GDExtension) | ✅               | 🛠️ 💀💀 | ✅         | ✅       |
+| Modification moteur réaliste          | ❌ 💀💀💀💀💀         | 🛠️ 💀💀💀         | ❌ 💀💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀 |
+| Séparation claire moteur / gameplay   | 🛠️ 💀💀          | ✅               | 🛠️ 💀💀 | 🛠️ 💀💀    | 🛠️ 💀💀  |
+| Support long terme (LTS / entreprise) | ❌ 💀💀💀           | ✅               | 🛠️ 💀💀 | ❌ 💀💀💀     | 🛠️ 💀💀  |
+
+<details>
+    <summary>Extension C++ native officielle</summary>
+> **Définition :**
+> Possibilité d’écrire des modules ou plugins **directement en C++**, avec intégration complète au moteur.
+
+> **Importance :**
+> Performance, accès bas niveau, et capacité à **corriger ou améliorer la physique et le rendu**.
+
+> **Context SC-like :**
+> Souvent nécessaire pour le calcul orbital, streaming massif et précision double.
+</details>
+
+<details>
+    <summary>Modification moteur réaliste</summary>
+> **Définition :**
+> Facilité à **forker ou modifier le moteur** pour ajouter des fonctionnalités non supportées nativement.
+
+> **Importance :**
+> Critique si le moteur n’a pas LWC ou floating origin, ou pour la physique multi-origine.
+
+> **Context SC-like :**
+> Godot / Unity / CryEngine requièrent presque tout le temps un fork pour atteindre les ambitions SC.
+</details>
+
+<details>
+    <summary>Séparation claire moteur / gameplay</summary>
+> **Définition :**
+> Architecture permettant de **distinguer le moteur (rendu, physique, streaming)** du gameplay (IA, mécanique, logiques joueur).
+
+> **Importance :**
+> Facilite la maintenance, le scaling, et les modifs profondes.
+
+> **Context SC-like :**
+> Critique pour MMO persistant et code réutilisable.
+</details>
+
+<details>
+    <summary>Support long terme (LTS / entreprise)</summary>
+> **Définition :**
+> stabilité, mises à jour et support officiel sur plusieurs années.
+
+> **Importance :**
+> un projet SC-like dure 5–10 ans → besoin d’un moteur **stable et supporté**.
+
+> **Context SC-like :**
+> UE5 LTS et O3DE > Unity LTS, CryEngine / Godot moins garantis pour un projet AAA.
+</details>
+
+
+### Physique & Précision spatiale (fondations) - Features
+| Feature                       | Godot   | Unreal Engine 5 | Unity   | CryEngine | O3DE     |
+| ----------------------------- | ------- | --------------- | ------- | --------- | -------- |
+| Physique double précision     | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀         | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀  |
+| Gravité locale variable       | 🛠️ 💀💀💀 | 🛠️ 💀💀💀         | 🛠️ 💀💀💀 | 🛠️ 💀💀💀   | 🛠️ 💀💀💀  |
+| Référentiels multiples        | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀         | ❌ 💀💀💀💀💀 | ❌ 💀💀💀💀💀   | ❌ 💀💀💀💀💀  |
+| Physique custom multi-échelle | ❌ 💀💀💀💀💀 | 🛠️ 💀💀💀💀        | ❌ 💀💀💀💀  | ❌ 💀💀💀💀    | 🛠️ 💀💀💀💀 |
+
+<details>
+    <summary>Physique double précision</summary>
+> **Définition :**
+> Moteur capable de calculer physique avec **64 bits** pour éviter jitter et artefacts sur grandes distances.
+
+> **Importance :**
+> Gravité, collisions, IA orbitale sur planètes et vaisseaux à grande échelle.
+
+> **Context SC-like :**
+> Indispensable pour tout MMO spatial.
+</details>
+
+<details>
+    <summary>Gravité locale variable</summary>
+> **Définition :**
+> Capacité de définir **différentes lois de gravité** selon la zone / planète / vaisseau.
+
+> **Importance :**
+> Pour orbites, planètes et manœuvres spatiales réalistes.
+
+> **Context SC-like :**
+> Critique pour gameplay spatial crédible.
+</details>
+
+<details>
+    <summary>Référentiels multiples</summary>
+> **Définition :**
+> Possibilité de calculer simultanément dans plusieurs systèmes de coordonnées indépendants (planète, station, vaisseau).
+
+> **Importance :**
+> Réduit les erreurs liées à la précision et permet des zones éloignées sans décaler le monde entier.
+
+> **Context SC-like :**
+> Très difficile à implémenter dans presque tous les moteurs.
+</details>
+
+<details>
+    <summary>Physique custom multi-échelle</summary>
+> **Définition :**
+> Moteur capable de combiner différentes résolutions de simulation pour les objets proches et lointains, sur plusieurs échelles (vaisseau → planète → système).
+
+> **Importance :**
+> Équilibre entre précision et performance.
+
+> **Context SC-like :**
+> Souvent nécessaire pour MMOs massifs seamless.
+</details>

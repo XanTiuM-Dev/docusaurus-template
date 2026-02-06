@@ -1,0 +1,44 @@
+### Process Task
+
+```mermaid
+graph TD
+    process_task(My Process):::processTask
+    classDef processTask fill:#009999, color:#333333
+```
+
+Une `Process Task` représente la boucle itérative d'un `Process` et de sa `Review`.  
+Le `Process` est effectuée puis `Review` par le(s) responsable(s) attitré à la `Process Task`.
+Si la `Process Task` est **validée** alors le workflow continue vers l'étape suivante, dans le cas contraire celui-ci retourne en `Process` et la boucle est réitérée jusqu'à validation.
+
+```mermaid
+---
+config:
+    flowchart:
+        subGraphTitleMargin: { "top": 10, "bottom": 10 }
+        curve: "linear"
+---
+
+graph TD
+    %% Nodes
+
+    subgraph ProcessTask[<a href="#process-task">Process Task</a>]
+        direction LR
+        pt_input[Input]:::input
+        pt_process[Process]
+        pt_review(Review):::review
+        pt_output[Output]
+        end
+
+        pt_input --> pt_process --> pt_review --> pt_output
+        pt_review --> pt_process
+
+    %% Class
+    classDef input fill:#FFBA08, color:#333333
+    classDef review fill:#6600CC
+
+    linkStyle 0,1,2 stroke:#00ff00,stroke-width:3px;
+    linkStyle 3 stroke:#f00,stroke-width:3px;
+
+    %% Individual Styling
+```
+

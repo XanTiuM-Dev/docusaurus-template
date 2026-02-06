@@ -1,0 +1,169 @@
+## World
+
+### World - Lecture rapide
+**Godot**
+> - Base solide pour scènes imbriquées et streaming manuel, mais aucun support spatial massif, tout doit être implémenté (floating origin, hiérarchie, rebasing).
+
+**Unreal Engine 5**
+> - Possède World Partition, HLOD et OFPA, ce qui le rend le plus proche d’un SC-like natif pour le streaming monde.
+> - Nécessite encore à modifier pour planètes procédurales complètes et hiérarchie multi-origine.
+
+**Unity**
+> - Fonctionnalités partielles (Addressables, SceneStreaming), mais pas nativement pensé pour le streaming spatial multi-planète.
+> - L’implémentation SC-like nécessiterait un gros framework maison.
+
+**CryEngine**
+> - Très flexible mais anciennes fondations float-centric, streaming spatial massif à implémenter.
+> - Bonne modularité des scènes mais pas d’out-of-the-box LWC.
+
+**O3DE**
+> - Source ouverte, architecture moderne, streaming possible mais pas complet.
+> - Nécessite rebasing, multi-origine et hiérarchie spatiale en custom.
+
+### World - Features
+| Feature                                                  | Godot                            | Unreal Engine 5                       | Unity                                           | CryEngine | O3DE     |
+| -------------------------------------------------------- | -------------------------------- | ------------------------------------- | ----------------------------------------------- | --------- | -------- |
+| Scènes imbriquées / hiérarchie                           | ✅                                | ✅                                     | ✅                                               | ✅         | ✅        |
+| Streaming manuel de scène / ressources                   | ✅ (PackedScene / ResourceLoader) | 🛠️ 💀💀 (possible via World Partition) | 🛠️ 💀💀💀 (Addressables + SceneStreaming)         | 🛠️ 💀💀💀   | 🛠️ 💀💀   |
+| Streaming spatial automatique / World Partition          | ❌ 💀💀💀💀💀                          | ✅                                     | ❌ 💀💀💀💀 (Scene Streaming + Addressables, custom) | ❌ 💀💀💀     | 🛠️ 💀💀💀  |
+| HLOD / LOD pour scènes massives                          | ❌ 💀💀💀                            | ✅                                     | 🛠️ 💀💀💀                                         | 🛠️ 💀💀💀   | 🛠️ 💀💀💀  |
+| One File Per Actor / modularité                          | ❌ 💀💀💀                            | ✅                                     | 🛠️ 💀💀                                          | 🛠️ 💀💀💀   | 🛠️ 💀💀   |
+| Hiérarchie spatiale galaxie → système → planète → région | ❌ 💀💀💀💀💀                          | 🛠️ 💀💀💀                               | ❌ 💀💀💀💀💀                                         | ❌ 💀💀💀💀💀   | 🛠️ 💀💀💀💀 |
+| Planètes procédurales complètes                          | ❌ 💀💀💀💀💀                          | 🛠️ 💀💀💀💀                              | ❌ 💀💀💀💀💀                                         | ❌ 💀💀💀💀💀   | 🛠️ 💀💀💀💀 |
+| Floating Origin multi-niveaux                            | ❌ 💀💀💀💀💀                          | 🛠️ 💀💀💀💀                              | ❌ 💀💀💀💀💀                                         | ❌ 💀💀💀💀💀   | 🛠️ 💀💀💀💀 |
+| Rebasing dynamique par entité                            | ❌ 💀💀💀💀💀                          | 🛠️ 💀💀💀💀                              | ❌ 💀💀💀💀                                          | ❌ 💀💀💀💀    | 🛠️ 💀💀💀💀 |
+| Conversion constante CPU ↔ GPU (pour distances massives) | ❌ 💀💀💀💀                           | 🛠️ 💀💀💀                               | ❌ 💀💀💀                                           | ❌ 💀💀💀     | 🛠️ 💀💀💀  |
+| Spatial Partition / world culling custom                 | ❌ 💀💀💀💀                           | 🛠️ 💀💀💀                               | ❌ 💀💀💀                                           | ❌ 💀💀💀     | 🛠️ 💀💀💀  |
+
+<details>
+    <summary>Scènes imbriquées / hiérarchie</summary>
+> **Définition :**
+> Possibilité de structurer les objets du monde en **arborescence** : scènes → sous-scènes → objets. Chaque sous-scène peut être chargée, instanciée et manipulée indépendamment.
+
+> **Importance :**
+> Permet de décomposer **un monde massif** en blocs modulaires pour faciliter le streaming, le LOD, et l’édition.
+
+> **Context SC-like :**
+> Essentiel pour gérer des planètes, stations et vaisseaux séparément tout en conservant un rendu seamless.
+</details>
+
+<details>
+    <summary>Streaming manuel de scène / ressources</summary>
+> **Définition :**
+> Chargement et déchargement explicite de scènes ou ressources via des scripts ou code (ex : `PackedScene` dans Godot, `ResourceLoader`).
+
+> **Importance :**
+> Permet de **maîtriser la mémoire** et de ne charger que les zones actives.
+
+> **Context SC-like :**
+> Nécessaire pour planètes et régions instanciées sans surcharger la RAM.
+</details>
+
+<details>
+    <summary>Streaming spatial automatique / World Partition</summary>
+> **Définition :**
+> Mécanisme intégré qui divise le monde en **cellules ou chunks**, et charge/décharge automatiquement selon la position du joueur.
+
+> **Importance :**
+> Évite au développeur de gérer manuellement le streaming, réduit les erreurs et simplifie le développement d’univers massifs.
+
+> **Context SC-like :**
+> Permet de parcourir un système planétaire entier sans temps de chargement perceptible.
+</details>
+
+<details>
+    <summary>HLOD / LOD pour scènes massives</summary>
+> **Définition :**
+> **Hierarchical Level of Detail** – système de LOD appliqué non seulement aux meshes mais aux **groupes entiers de scènes**, réduisant le détail des objets distants pour optimiser le rendu.
+
+> **Importance :**
+> Critique pour **maintenir un framerate stable** sur des mondes gigantesques.
+
+> **Context SC-like :**
+> Gérer une planète entière et ses vaisseaux à distance sans saturer GPU/CPU.
+</details>
+
+<details>
+    <summary>One File Per Actor / modularité</summary>
+> **Définition :**
+> Chaque acteur ou objet du monde est stocké dans **un fichier/ressource séparé**, permettant une modularité maximale.
+
+> **Importance :**
+> Facilite **la collaboration en équipe**, la mise à jour et le streaming sélectif.
+
+> **Context SC-like :**
+> Indispensable pour les MMO ou univers massifs avec centaines de milliers d’objets interactifs.
+</details>
+
+<details>
+    <summary>Hiérarchie spatiale galaxie → système → planète → région</summary>
+> **Définition :**
+> Organisation hiérarchique des coordonnées et zones, du plus global (galaxie) au plus local (zone planétaire).
+
+> **Importance :**
+> Permet de **maîtriser la précision** et le streaming selon l’échelle.
+
+> **Context SC-like :**
+> Facilite les transitions seamless et la gestion multi-origine.
+</details>
+
+<details>
+    <summary>Planètes procédurales complètes</summary>
+> **Définition :**
+> Génération algorithmique de planètes avec **terrain, océans, atmosphère, végétation et LOD dynamiques**, sans assets préfabriqués complets.
+
+> **Importance :**
+> Permet de **réduire le poids du jeu** et de créer des mondes massifs uniques.
+
+> **Context SC-like :**
+> Clé pour un univers cohérent et infini avec exploration illimitée.
+</details>
+
+<details>
+    <summary>Floating Origin multi-niveaux</summary>
+> **Définition :**
+> Déplacement dynamique de l’origine des coordonnées autour du joueur, appliqué à **plusieurs échelles simultanément** (planète, système, galaxie).
+
+> **Importance :**
+> Permet d’éviter la perte de précision float et les jitter à grande distance.
+
+> **Context SC-like :**
+> Critique pour gérer l’espace et les planètes sans double précision native partout.
+</details>
+
+<details>
+    <summary>Rebasing dynamique par entité</summary>
+> **Définition :**
+> Déplacement de l’origine du monde **local à une entité spécifique**, plutôt que global pour tous les joueurs.
+
+> **Importance :**
+> Permet de **maintenir la précision pour chaque objet distant**, notamment dans un MMO spatial.
+
+> **Context SC-like :**
+> Essentiel pour gérer les vaisseaux éloignés ou les planètes instanciées en même temps.
+</details>
+
+<details>
+    <summary>Conversion constante CPU ↔ GPU (pour distances massives)</summary>
+> **Définition :**
+> Traduction continue des coordonnées du CPU (double ou float) vers GPU (souvent float) pour le rendu, avec compensation des différences d’échelle.
+
+> **Importance :**
+> Crucial pour éviter **les artefacts visuels** sur des distances astronomiques.
+
+> **Context SC-like :**
+> Permet de rendre des vaisseaux ou planètes distants sans jitter.
+</details>
+
+<details>
+    <summary>Spatial Partition / world culling custom</summary>
+> **Définition :**
+> Séparation du monde en partitions / grilles / octrees, avec culling manuel pour ne rendre que ce qui est visible.
+
+> **Importance :**
+> Optimise le rendu et la physique sur des scènes massives.
+
+> **Context SC-like :**
+> Permet d’avoir **plusieurs planètes et systèmes actifs** en limitant la charge GPU/CPU.
+</details>
+

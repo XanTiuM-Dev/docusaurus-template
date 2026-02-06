@@ -1,0 +1,8 @@
+col A,col B,col C,col D
+toto,50,int,60
+tata,20,int,10
+tutu,meow,str,0
+,,Merged 2,
+,Merged 3,,
+Merged 2,,,
+Merged 3,,,

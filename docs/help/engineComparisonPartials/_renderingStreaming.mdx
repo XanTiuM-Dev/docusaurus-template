@@ -1,0 +1,302 @@
+## Rendering & Streaming
+
+### Rendering & Streaming - Lecture rapide
+**Godot**
+> - Renderer efficace pour des jeux classique et très bon contrôle shader.
+> - Mais aucun support natif des grandes distances, tout le pipeline GPU doit être adapté et les LOD planétaire ainsi que le streaming de terrain nécessite une solution custom.
+
+**Unreal Engine 5**
+> - Domine sur le rendu local grâce à Nanite, Lumen, les Virtual Shadow Maps et le HLOD automatique.
+> - Mais n'est pas pensé nativement pour des planètes visibles à distance astronomique, la transition espace ↔ sol, et sa précision GPU est encore limitée.
+
+**Unity**
+> - Le renderer HDRP est solide et le moteur possède un bon tooling généraliste.
+> - Mais aucune solution native multi-échelle, les shaders sont float-centric et le streaming de terrain est limité.
+
+**CryEngine**
+> - Excellente qualité visuelle historique et technologie de terrain solide en local.
+> - Architecture vieillissante pour le seamless spatial.
+
+**O3DE**
+> - Le moteur de rendu est moderne et open-source. C'est un bon point d'entrée pour le camera-relative rendering et les shaders custom.
+> - Mais n'as pas de solution planétaire native ni de LOD massif comme Nanite (UE5).
+
+#### **Synthèse**
+Le rendu est l’un des plus gros pièges du SC-like.
+Même si :
+- la simulation est en double précision
+- le monde est hiérarchisé
+
+**Le GPU reste en 32 bits** donc TOUS les moteurs doivent:
+- implémenter du **camera-relative rendering**
+- masquer les artefacts GPU
+- faire des **LOD visuels multi-échelle**
+- tricher visuellement à très grande distance
+
+Tout les moteurs doivent réimplémenter ça au-dessus de ce qui existe déjà.
+
+### Rendering & Streaming - Features
+| Feature                                  | Godot                 | Unreal Engine 5        | Unity          | CryEngine | O3DE    |
+| ---------------------------------------- | --------------------- | ---------------------- | -------------- | --------- | ------- |
+| Renderer moderne (Forward / Deferred)    | ✅ (Forward+ / Compat) | ✅ (Deferred / Forward) | ✅ (URP / HDRP) | ✅         | ✅       |
+| LOD mesh classique                       | ✅ (LODMesh)           | ✅                      | ✅              | ✅         | ✅       |
+| Occlusion culling                        | 🛠️ ⭐⭐ (basique)      | ✅                      | 🛠️ ⭐⭐         | 🛠️ ⭐⭐    | 🛠️ ⭐⭐  |
+| HLOD automatique                         | ❌ ⭐⭐⭐                 | ✅                      | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| LOD massif type Nanite                   | ❌ ⭐⭐⭐⭐⭐               | ✅ (Nanite)             | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+| Camera-relative rendering                | ❌ ⭐⭐⭐⭐                | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| LOD multi-échelle planétaire             | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+| Streaming terrain continu                | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Planètes visibles à échelle astronomique | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+| Transition espace ↔ atmosphère ↔ sol     | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+| Shader-safe large coordinates            | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | 🛠️ ⭐⭐⭐ |
+| Masquage artefacts GPU float             | ❌ ⭐⭐⭐⭐                | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Culling hiérarchique multi-échelle       | ❌ ⭐⭐⭐⭐⭐               | 🛠️ ⭐⭐⭐                | ❌ ⭐⭐⭐          | ❌ ⭐⭐⭐     | 🛠️ ⭐⭐⭐ |
+| Streaming visuel dépendant de l’échelle  | ❌ ⭐⭐⭐⭐⭐               | ❌ ⭐⭐⭐⭐                 | ❌ ⭐⭐⭐⭐         | ❌ ⭐⭐⭐⭐    | ❌ ⭐⭐⭐⭐  |
+
+
+<details>
+    <summary>Renderer moderne (Forward / Deferred)</summary>
+> **Définition :**
+> Un renderer moderne définit la manière dont la scène est éclairée et composée à l’écran.
+> - **Deferred Rendering** : la géométrie est rendue d’abord, l’éclairage est calculé ensuite (idéal pour beaucoup de lights).
+> - **Forward Rendering / Forward+** : géométrie et éclairage sont traités ensemble, avec des optimisations type light culling par tile.
+
+> **Importance :**
+> C’est la **fondation du pipeline visuel** :
+> - gestion de milliers de lights (villes, stations, vaisseaux),
+> - compatibilité avec PBR, shadows avancées, post-process,
+> - performances stables sur scènes denses.
+
+> **Context SC-like :**
+> Un jeu à la Star Citizen nécessite :
+> - Deferred pour stations spatiales, villes planétaires,
+> - Forward+ pour VR, cockpit, scènes spatiales très contrastées,
+> - parfois un mix des deux selon le contexte (intérieur / extérieur / espace).
+</details>
+
+<details>
+    <summary>LOD mesh classique</summary>
+> **Définition :**
+> Système de **niveaux de détail géométriques** prédéfinis pour un mesh (LOD0, LOD1, LOD2…), sélectionnés selon la distance à la caméra.
+
+> **Importance :**
+> Réduction drastique :
+> - du nombre de triangles,
+> - des coûts GPU,
+> - des appels de draw.  
+> C’est le minimum vital de toute scène 3D scalable.
+
+> **Context SC-like :**
+> Toujours utile pour :
+> - props, bâtiments secondaires,
+> - assets non compatibles Nanite,
+> - éléments gameplay nécessitant un contrôle précis du mesh (collision, destruction).
+</details>
+
+<details>
+    <summary>Occlusion culling</summary>
+> **Définition :**
+> Technique qui empêche le rendu d’objets **cachés par d’autres** (hors du champ visuel réel), même s’ils sont dans le frustum.
+
+> **Importance :**
+> - Évite le rendu inutile,
+> - Améliore fortement les performances en environnements fermés ou urbains,
+> - Réduit la charge GPU et CPU.
+
+> **Context SC-like :**
+> Indispensable pour :
+> - villes planétaires,
+> - intérieurs complexes de stations,
+> - megastructures (hangars, astéroïdes creux).
+</details>
+
+<details>
+    <summary>HLOD automatique</summary>
+> **Définition :**
+> Système qui **fusionne dynamiquement plusieurs meshes** distants en un proxy simplifié unique (mesh + matériaux combinés).
+
+> **Importance :**
+> - Réduction massive des draw calls,
+> - Simplification du streaming,
+> - Transition douce entre niveaux de détail.
+
+> **Context SC-like :**
+> Clé pour :
+> - villes vues depuis l’atmosphère,
+> - stations vues depuis l’espace,
+> - grandes zones industrielles ou complexes urbains.
+</details>
+
+<details>
+    <summary>Extension C++ native officielle</summary>
+> **Définition :**
+> Système de **LOD virtuel automatique** basé sur des clusters de micro-triangles, permettant de rendre des meshes extrêmement détaillés sans LOD manuels.
+
+> **Importance :**
+> - Supprime la gestion manuelle des LODs,
+> - Permet des assets ultra-détaillés,
+> - Scalabilité quasi automatique.
+
+> **Context SC-like :**
+> Idéal pour :
+> - surfaces planétaires rocheuses,
+> - stations spatiales gigantesques,
+> - vaisseaux capitaux visibles de près et de loin.
+</details>
+
+<details>
+    <summary>Camera-relative rendering</summary>
+> **Définition :**
+> Technique consistant à **déplacer l’origine du monde autour de la caméra**, afin de maintenir des coordonnées proches de zéro côté GPU.
+
+> **Importance :**
+> - Évite les erreurs de précision float,
+> - Stabilise le rendu à grande distance,
+> - Empêche jitter, z-fighting et artefacts de shadow.
+
+> **Context SC-like :**
+> Fondamental pour :
+> - transitions espace ↔ planète,
+> - vues orbitales à plusieurs millions de mètres,
+> - continuité visuelle sans coupure.
+</details>
+
+<details>
+    <summary>LOD multi-échelle planétaire</summary>
+> **Définition :**
+> LOD qui ne dépend pas seulement de la distance caméra, mais de **l’échelle de représentation** (orbite, atmosphère, surface).
+
+> **Importance :**
+> - Permet de passer d’une planète “sphère low-poly” à un terrain détaillé,
+> - Optimise le rendu selon le contexte global,
+> - Évite de charger inutilement du détail.
+
+> **Context SC-like :**
+> Indispensable pour :
+> - planète visible depuis l’espace,
+> - descente atmosphérique continue,
+> - surface explorable sans écran de chargement.
+</details>
+
+<details>
+    <summary>Streaming terrain continu</summary>
+> **Définition :**
+> Chargement dynamique et progressif du terrain (heightmaps, meshes, textures) en fonction de la position et de l’échelle.
+
+> **Importance :**
+> - Évite les temps de chargement,
+> - Permet des mondes gigantesques,
+> - Réduit drastiquement l’empreinte mémoire.
+
+> **Context SC-like :**
+> Nécessaire pour :
+> - planètes complètes,
+> - vols longue distance,
+> - exploration sans instanciation.
+</details>
+
+<details>
+    <summary>Planètes visibles à échelle astronomique</summary>
+> **Définition :**
+> Capacité à afficher une planète **depuis des distances orbitales ou interplanétaires**, tout en conservant une cohérence visuelle.
+
+> **Importance :**
+> - Renforce la crédibilité du monde,
+> - Supprime les transitions artificielles,
+> - Améliore l’immersion.
+
+> **Context SC-like :**
+> Pilier du fantasy SC :
+> - voir la planète depuis l’espace,
+> - s’en approcher en temps réel,
+> - atterrir sans rupture.
+</details>
+
+<details>
+    <summary>Transition espace ↔ atmosphère ↔ sol</summary>
+> **Définition :**
+> Pipeline visuel et logique permettant une transition fluide entre :
+> - vide spatial,
+> - atmosphère (scattering),
+> - surface planétaire.
+
+> **Importance :**
+> - Complexité technique élevée (shaders, LOD, streaming),
+> - Point critique pour l’immersion,
+> - Source majeure de bugs si mal gérée.
+
+> **Context SC-like :**
+> L’un des défis centraux :
+> - nuages volumétriques,
+> - glow atmosphérique,
+> - changement progressif des LODs et shaders.
+</details>
+
+<details>
+    <summary>Shader-safe large coordinates</summary>
+> **Définition :**
+> Techniques shader permettant de manipuler de très grandes coordonnées sans perte de précision (offsets, doubles simulés, coordonnées relatives).
+
+> **Importance :**
+> - Les shaders GPU utilisent des floats simples,
+> - Les grandes distances provoquent des erreurs visibles,
+> - Nécessaire pour stabilité visuelle.
+
+> **Context SC-like :**
+> Indispensable pour :
+> - surfaces planétaires éloignées,
+> - ombres et éclairage précis,
+> - effets atmosphériques à grande échelle.
+</details>
+
+<details>
+    <summary>Masquage artefacts GPU float</summary>
+> **Définition :**
+> Ensemble de techniques visuelles visant à cacher ou atténuer les artefacts liés aux limites de précision float (flicker, banding, jitter).
+
+> **Importance :**
+> - Le problème ne peut pas toujours être supprimé,
+> - Le masquer est souvent plus rentable,
+> - Améliore la qualité perçue.
+
+> **Context SC-like :**
+> Utilisé pour :
+> - lointains visuels,
+> - silhouettes planétaires,
+> - transitions douces plutôt que précision brute.
+</details>
+
+<details>
+    <summary>Culling hiérarchique multi-échelle</summary>
+> **Définition :**
+> Système de culling basé sur une **hiérarchie spatiale** (galaxie → système → planète → région → chunk).
+
+> **Importance :**
+> - Réduction massive des calculs inutiles,
+> - Scalabilité extrême,
+> - Base de tout moteur à très grande échelle.
+
+> **Context SC-like :**
+> Absolument critique pour :
+> - systèmes stellaires entiers,
+> - multiples planètes actives,
+> - optimisation CPU globale.
+</details>
+
+<details>
+    <summary>Streaming visuel dépendant de l’échelle</summary>
+> **Définition :**
+> Le type de rendu, d’assets et de shaders dépend de l’échelle d’observation, pas seulement de la distance.
+
+> **Importance :**
+> - Permet de changer complètement de représentation,
+> - Optimise chaque niveau de perception,
+> - Rend possible un monde “infini”.
+
+> **Context SC-like :**
+> C’est le cœur de l’illusion :
+> - sprite / sphere à grande distance,
+> - terrain procedural en approche,
+> - détails fins au sol,  
+sans jamais “changer de jeu”.
+</details>

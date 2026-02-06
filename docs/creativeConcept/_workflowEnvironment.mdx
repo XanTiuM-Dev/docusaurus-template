@@ -1,0 +1,133 @@
+
+import ProcessTask from './_processTask.mermaid.mdx'
+
+## Workflow - Environment Team
+
+```mermaid
+---
+config:
+    flowchart:
+        subGraphTitleMargin: { "top": 10, "bottom": 10 }
+        curve: "linear"
+---
+
+graph TD
+    %% Nodes
+
+    input{Approuved Concept}:::lead
+
+    team_attribution[<a href="#team-attribution">Team Attribution</a>]
+
+    props_input{{<a href="#props-workflow">Props Workflow</a>}}
+    enviro_input{{<a href="#environment-workflow">Environment Workflow</a>}}
+    modularkit_input{{<a href="#modular-kit-workflow">Modular Kit Workflow</a>}}
+    heroasset_input{{<a href="#hero-asset-workflow">Hero Asset Workflow</a>}}
+
+    white_box(<a href="#white-box">White Box</a>):::processTask
+    grey_box(<a href="#grey-box">Grey Box</a>):::processTask
+    uv_unwrap(<a href="#uv-unwrap">UV Unwrap</a>):::processTask
+    texturing(<a href="#texturing">Texturing</a>):::processTask
+    rigging(<a href="#rigging">Rigging</a>):::processTask
+    animation(<a href="#animation">Animation</a>):::processTask
+
+    review(<a href="#final-review">Final Review</a>):::review
+
+    engine_integration{{<a href="#engine-integration">Engine Integration</a>}}
+
+    %% Edge Connections
+    input --> team_attribution
+
+    team_attribution --> props_input
+    team_attribution --> enviro_input
+    team_attribution --> modularkit_input
+    team_attribution --> heroasset_input
+
+    props_input --> white_box
+    enviro_input --> white_box
+    modularkit_input --> white_box
+    heroasset_input --> white_box
+
+    white_box --> grey_box
+    grey_box --> uv_unwrap
+    uv_unwrap --> texturing
+    uv_unwrap --> rigging
+    rigging --> animation
+
+    texturing --> review
+    animation --> review
+
+    review --> engine_integration
+
+
+    %% Class
+    classDef lead fill:#FFBA08, color:#333333
+    classDef review fill:#6600CC
+    classDef processTask fill:#009acc, color:#333333
+
+    linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 stroke:#00ff00,stroke-width:3px;
+
+    %% Individual Styling
+```
+
+---
+<details>
+    <summary>Legende</summary>
+    <ProcessTask name="process-task"/>
+</details>
+
+### Team Attribution
+Lors de cette phase, deux possibilités existent:
+- Une équipe (un ou plusieurs contributeurs) est assignée en fonction de la complexité et de la difficulté évaluée lors des phases précédentes.
+- Une équipe (un ou plusieurs contributeurs) s'assigne d'elle même à une tâche libre. Dans ce cas là, c'est à l'équipe d'évaluer objectivement sa capacité à réaliser la tâche.
+
+---
+
+### Workflow Attribution
+Plusieurs worklows éxistent en fonction du type d'asset à réaliser.
+Le choix du workflow dépend de la complexité et du / des asset(s) à réaliser, du leur rôle au seins du projet et des différents acteurs devant intervenir lors de sa production.
+Les étapes de production restent sensiblement les mêmes, mais leur réalisation et les contraintes s'y appliquant peuvent varier d'un workflow à un autre.
+
+| Terme                   | Fonction                                       | Niveau d’importance           | Réutilisabilité | Complexité    |
+| ----------------------- | ---------------------------------------------- | ----------------------------- | --------------- | ------------- |
+| **Props**               | Petits objets décoratifs                       | Faible → moyenne              | Faible          | Simple        |
+| **Environnement Asset** | Élément structurel ou décorant l’environnement | Moyenne → élevée              | Moyenne         | Variable      |
+| **Modular Kit**         | Ensemble d’éléments standardisés combinables   | Élevée (structure du monde)   | Très élevée     | Moyen         |
+| **Hero Asset**          | Objet clé, focalisateur, très détaillé         | Très élevée (visuel narratif) | Faible          | Très complexe |
+
+#### Props Workflow
+C'est le workflow le léger à mettre en oeuvre.  
+Petits objets placés dans la scène pour enrichir l’environnement, raconter une histoire, rendre un lieu plus crédible ou donner un sens visuel.
+Ils sont généralement de petite taille, réutilisable, ne participent pas à la structure du décor et leur niveau de détail varie en fonction de leur taille et de leur distance d'observation.
+Exemples:
+- Chaise, bouteille, lampe, caisse
+- Débris, outils, accessoirs divers
+
+#### Environment Workflow
+La difficulté de ce type de workflow varie d'un asset à un autre, mais reste généralement modéré.
+Un asset d’environnement est un élément qui fait partie du décor ou qui définit la géographie/architecture d’une zone.
+Il joue un rôle structurel dans la scène en contribuant à sa composition ou à sa silhouette, il peut être de petite ou grande taille mais généralement plus massif qu'un simple prop, il est souvent moins réutilisable d'un modular kit.
+Exemples:
+- Un rocher, un arbre, un pont
+- Une falaise
+
+#### Modular Kit Workflow
+
+
+#### Hero Asset Workflow
+
+---
+### Process Steps
+#### White Box
+#### Grey Box
+#### UV Unwrap
+#### Texturing
+#### Rigging
+#### Animation
+
+---
+
+### Final Review
+
+---
+
+### Engine Integration

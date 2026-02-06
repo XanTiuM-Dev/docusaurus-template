@@ -1,0 +1,134 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #ff0808;
+  --ifm-color-primary-dark: #ed0000;
+  --ifm-color-primary-darker: #e00000;
+  --ifm-color-primary-darkest: #b80000;
+  --ifm-color-primary-light: #ff2222;
+  --ifm-color-primary-lighter: #ff2f2f;
+  --ifm-color-primary-lightest: #ff5757;
+
+  --ifm-hover-overlay: #ffffff0a; /*ffffff0d*/
+  /* Quote code bloc */
+  /* --ifm-code-background: #151515;  */
+
+  /* Custom Properties */
+  --xgs-code-header-background: #222222;
+}
+
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #ff0808;
+  --ifm-color-primary-dark: #ed0000;
+  --ifm-color-primary-darker: #e00000;
+  --ifm-color-primary-darkest: #b80000;
+  --ifm-color-primary-light: #ff2222;
+  --ifm-color-primary-lighter: #ff2f2f;
+  --ifm-color-primary-lightest: #ff5757;
+  --ifm-background-color: #1b1b1b;
+}
+
+/**
+ * Manual override
+ * Blender Pro Art Dark Theme
+ */
+.hero {
+  --ifm-hero-background-color: #252525; /*161616*/
+  --ifm-hero-text-color: var(--ifm-color-primary);
+}
+.navbar {
+  --ifm-navbar-background-color: #222222;
+}
+.footer {
+  --ifm-footer-background-color: #222222;
+}
+.button {
+  --ifm-button-background-color: #161616;
+  --ifm-button-border-color: #303030;
+}
+.button.button--secondary {
+  color: #e7e7e7;
+}
+
+.prism-code {
+  counter-reset: line-number;
+}
+.prism-code .token-line::before {
+  counter-increment: line-number;
+  content: counter(line-number);
+  margin-right: calc(var(--ifm-pre-padding) * 1.5);
+  text-align: right;
+  min-width: 2.5rem;
+  display: inline-block;
+  opacity: .3;
+  position: sticky;
+  left: var(--ifm-pre-padding);
+}
+
+/* CodeBlock-Custom */
+/* Hide vanilla codeblock header */
+[class^="codeBlockTitle_"] {
+  display: none;
+}
+.theme-code-block {
+  margin-bottom: 0;
+}
+
+.custom-codeblock, .csvBlock {
+  border: 1px solid var(--ifm-color-primary-darkest);
+  border-radius: var(--ifm-code-border-radius);
+  margin-bottom: var(--ifm-leading);
+}
+/* Custom header */
+.custom-codeblock-header, .csvBlockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--xgs-code-header-background);
+  padding: 0.75rem var(--ifm-pre-padding);
+  font-size: var(--ifm-code-font-size);
+  font-weight: 500;
+  border-top-left-radius: var(--ifm-code-border-radius);
+  border-top-right-radius: var(--ifm-code-border-radius);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.custom-codeblock-title, .csvBlockTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.custom-codeblock-lang {
+  margin-left: 1rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  flex-shrink: 0;
+}
+/*  */
+
+/* CSV */
+.csvBlockTable {
+  margin-bottom: 0;
+  border-bottom-left-radius: var(--ifm-code-border-radius);
+  border-bottom-right-radius: var(--ifm-code-border-radius);
+}
+
+.csvBlock {
+  margin: var(--ifm-spacing-vertical) 0;
+  /* display: inline-block; */
+  width: fit-content;
+  max-width: 100%;
+}
+
+.csvBlockContent {
+  overflow-x: auto;
+}

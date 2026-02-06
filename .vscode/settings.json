@@ -1,0 +1,4 @@
+{
+  "conventionalCommits.scopes": ["Setup"],
+  "git.ignoreLimitWarning": true
+}
