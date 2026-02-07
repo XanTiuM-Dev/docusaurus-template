@@ -5,6 +5,53 @@ sidebar_position: 1
 
 # Site Customization
 
+## Icon in NavBar
+Dans le fichier `docusaurus.config.ts` commencez par ajouter un champ `className` et assignez lui comme valeur:
+- `header-icon` : sert au style global appliqué aux icones de la NavBar.
+- `header-{IconName}-link` : identifiant unique pour assigner l'icone où `{IconName}` correspond au nom de l'icone.
+
+```ts title="docusaurus.config.ts > config > themeConfig > navbar > items"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+:::info
+Pensez à ne pas utiliser de champ `label` afin de ne pas avoir de texte en plus de l'icone.
+:::
+
+Puis dans `src/css/custom.css` ajoutez d'abord le style global à appliquer aux icones de la NavBar :
+```css title="/src/css/custom.css"
+/* https://github.com/facebook/docusaurus/issues/2634 */
+.header-icon::before {
+    content: "";
+    background-color: var(--ifm-navbar-link-color);
+    width: 24px;
+    height: 24px;
+    transition: background-color var(--ifm-transition-fast)var(--ifm-transition-timing-default);
+    display: flex;
+}
+.header-icon:hover::before {
+    background-color: var(--ifm-navbar-link-hover-color);
+}
+```
+
+Puis pour chaque icone que vous souhaitez ajouter en utilisant leur identifiant unique définit précédement dans le champ `className`:
+
+```css title="/src/css/custom.css"
+.header-github-link::before {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E");
+}
+```
+
+:::info Attention
+Veillez à ce que la valeur du champs `viewBox='...'` de `url(...)` soit identique à celle de `width` et `height` dans le style global.
+Dans notre exemple `width: 24px` et `height: 24px` -> `viewBox='0 0 24 24'`
+:::
+
 
 ## Add a new Tab
 Commencez par choisir le nom de votre nouvel item ainsi que l'`id` qui lui sera associé.
@@ -41,26 +88,6 @@ Un élement se construit ainsi:
 
 ## Style customization
 ### Code blocks
-#### Line counter
-To enable line counter by default on every code block, add this snippet to `src/css/custom.css` :
-```css title="/src/css/custom.css"
-/* https://gist.github.com/uditalias/3969a20ef759bf3a8757499429b30063 */
-.prism-code {
-  counter-reset: line-number;
-}
-.prism-code .token-line::before {
-  counter-increment: line-number;
-  content: counter(line-number);
-  margin-right: calc(var(--ifm-pre-padding) * 1.5);
-  text-align: right;
-  min-width: 2.5rem;
-  display: inline-block;
-  opacity: .3;
-  position: sticky;
-  left: var(--ifm-pre-padding);
-}
-```
-
 #### Override Prism Theme
 To override Prism Theme, create a `prismTheme.ts` in your `src` folder then past this snippet in created file :
 ```ts title="/src/prismTheme.ts"
@@ -99,8 +126,13 @@ Themes references can be found on [Prism-React-Renderer repository](https://gith
 #### Add new languages
 [Docusaurus documentation](https://docusaurus.io/docs/markdown-features/code-blocks#supported-languages)
 
-#### Header customization
-Header customization use a custom plugin. This plugin use two separate file : 
+#### CodeBlock customization
+CodeBlock customization use a wrapper around the original plugin.  
+Currently, the wrapper implement following features:
+- Custom header with block name and language flag
+- Force display of line numbers
+
+This plugin use two separate file : 
 - `/src/theme/CodeBlock/index.tsx` : Act as a top layer on original CodeBlock plugin. Responsible of implementation of the custom header
 
     ```tsx title="./src/theme/CodeBlock/index.tsx"
@@ -117,12 +149,12 @@ Header customization use a custom plugin. This plugin use two separate file :
         html: 'HTML',
         py: 'Python',
         cpp: 'C++',
+        csharp: 'C#',
         markdown: 'Markdown',
         rust: 'Rust',
         yaml: 'YAML',
         go: 'Go Lang',
         json: 'JSON',
-        ...
     };
 
     function extractTitle(metastring?: string): string | null {
@@ -131,8 +163,24 @@ Header customization use a custom plugin. This plugin use two separate file :
         return match ? match[1] : null;
     }
 
+    function ensureShowLineNumbers(metastring?: string): string {
+        if (!metastring || metastring.trim() === '') return 'showLineNumbers';
+
+        const metastringWithoutFields = metastring.replace(/\w+="[^"]*"/g, '');
+        const hasFlag = /\bshowLineNumbers(?:=\d+)?\b/.test(metastringWithoutFields);
+
+        if (hasFlag) return metastring;
+
+        return metastring.trim() + ' showLineNumbers';
+    }
+
+    // export default function CodeBlockWrapper(props: Props): JSX.Element {
     export default function CodeBlockWrapper(props: Props): Element {
         const { className, metastring } = props;
+
+        // force showLineNumber
+        const newMetastring = ensureShowLineNumbers(metastring);
+        console.log("[Docusaurus][CodeBlockWrapper] after props:", newMetastring);
 
         const langId = className?.replace('language-', '');
         const language = langId ? mapping[langId] : null;
@@ -153,7 +201,7 @@ Header customization use a custom plugin. This plugin use two separate file :
                 </div>
             )}
 
-            <OriginalCodeBlock {...props} />
+            <OriginalCodeBlock {...props} metastring={newMetastring} />
             </div>
         );
     }

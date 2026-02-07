@@ -4,7 +4,6 @@ import type { Props } from '@theme/CodeBlock';
 
 // #TODO afficher le langage même sans title {DONE ?}
 // #TODO ajouter une icone par langage
-// #TODO check le scroll lateral quand une ligne est trop longue
 
 const mapping: Record<string, string> = {
   js: 'JavaScript',
@@ -36,9 +35,24 @@ function extractTitle(metastring?: string): string | null {
   return match ? match[1] : null;
 }
 
+function ensureShowLineNumbers(metastring?: string): string {
+  if (!metastring || metastring.trim() === '') return 'showLineNumbers';
+
+  const metastringWithoutFields = metastring.replace(/\w+="[^"]*"/g, '');
+  const hasFlag = /\bshowLineNumbers(?:=\d+)?\b/.test(metastringWithoutFields);
+
+  if (hasFlag) return metastring;
+
+  return metastring.trim() + ' showLineNumbers';
+}
+
 // export default function CodeBlockWrapper(props: Props): JSX.Element {
 export default function CodeBlockWrapper(props: Props): Element {
   const { className, metastring } = props;
+
+  // force showLineNumber
+  const newMetastring = ensureShowLineNumbers(metastring);
+  console.log("[Docusaurus][CodeBlockWrapper] after props:", newMetastring);
 
   const langId = className?.replace('language-', '');
   const language = langId ? mapping[langId] : null;
@@ -59,7 +73,7 @@ export default function CodeBlockWrapper(props: Props): Element {
         </div>
       )}
 
-      <OriginalCodeBlock {...props} />
+      <OriginalCodeBlock {...props} metastring={newMetastring} />
     </div>
   );
 }

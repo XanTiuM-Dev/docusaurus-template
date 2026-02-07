@@ -104,7 +104,7 @@ const config: Config = {
       { name: 'twitter:title', content: 'DyingStar - Technical Docs' },
       {
         name: 'twitter:description',
-        content: 'Technical Documentation for DyingStar',
+        content: 'Template Documentation for XGS',
       },
       { name: 'twitter:url', content: 'https://docs.dyingstar-game.com' },
       { name: 'twitter:creator', content: '@DyingStar-game' },
@@ -115,7 +115,7 @@ const config: Config = {
       { name: 'twitter:title', content: 'DyingStar - Technical Docs' },
       {
         name: 'twitter:description',
-        content: 'Technical Documentation for DyingStar',
+        content: 'Template Documentation for XGS',
       },
       { name: 'twitter:url', content: 'https://docs.dyingstar-game.com' },
       { name: 'twitter:creator', content: '@DyingStar-game' },
@@ -125,7 +125,7 @@ const config: Config = {
       { name: 'og:title', content: 'DyingStar - Technical Docs' },
       {
         name: 'og:description',
-        content: 'Technical Documentation for DyingStar',
+        content: 'Template Documentation for XGS',
       },
       { name: 'og:url', content: 'https://docs.dyingstar-game.com' },
       { name: 'og:site_name', content: 'DyingStar - Technical Docs' },
@@ -238,13 +238,15 @@ const config: Config = {
         // },
         {
           href: 'https://www.artstation.com/xantium-design',
-          label: 'Artstation',
+          // label: 'Artstation',
           position: 'right',
+          className: 'header-icon header-artstation-link',
         },
         {
           href: 'https://github.com/XanTiuM-Dev',
-          label: 'GitHub',
+          // label: 'GitHub',
           position: 'right',
+          className: 'header-icon header-github-link',
         },
       ],
     },
@@ -265,15 +267,15 @@ const config: Config = {
           items: [
             {
               label: 'Discord',
-              href: 'https://discord.gg/t4ybBPwHaH  ',
+              href: '#',
             },
             {
               label: 'Twitter',
-              href: 'https://x.com/DyingStar_Game',
+              href: '#',
             },
             {
               label: 'Youtube',
-              href: 'https://youtube.com/@dyingstar-game',
+              href: '#',
             },
           ],
         },
@@ -281,21 +283,22 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Website',
-              href: 'https://dyingstar-game.com',
+              label: 'Artstation',
+              href: 'https://www.artstation.com/xantium-design',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/DyingStar-game',
+              href: 'https://github.com/XanTiuM-Dev',
             },
           ],
         },
       ],
-      copyright: `Technical Documentation for DyingStar from 2025-07 to ${new Date().getFullYear()}-${
+      copyright: `Template Documentation for XGS from 2026-01 to ${new Date().getFullYear()}-${
         new Date().getMonth() + 1
       }`,
     },
     prism: {
+      additionalLanguages: [ 'java', 'powershell', 'bash', 'json' ], // https://github.com/facebook/docusaurus/blob/5997f3ab3ced61ba14d08f4ca89c1528b96dd332/website/docusaurus.config.ts#L639
       // theme: prismThemes.github,
       // darkTheme: prismThemes.dracula,
       theme: customPrismTheme,

@@ -3,6 +3,9 @@ title: Engine Comparison
 sidebar_position: 2
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 import EngineFoundation from './engineComparisonPartials/_engineFoundations.mdx'
 import World from './engineComparisonPartials/_world.mdx'
 import Gameplay from './engineComparisonPartials/_gameplayEntities.mdx'
@@ -12,11 +15,34 @@ import Tooling from './engineComparisonPartials/_toolingPipeline.mdx'
 
 # Engine Comparison
 
-Légende :
+:::info Légende
 - ✅ : fourni nativement / exploitable directement
 - 🛠️ : existe partiellement ou nécessite adaptation
 - ❌ : absent, à implémenter entièrement
 - 🟢 🟡 🟠 🔴 : échelle de difficulté d'implémentation (croissante: débutant - amateur - pro - expert)
+:::
+
+{/* <Tabs>
+    <TabItem value="engineFoundation" label="Engine Foundation">
+        <EngineFoundation name="EngineFoundation"/>
+    </TabItem>
+    <TabItem value="world" label="World">
+        <World name="World"/>
+    </TabItem>
+    <TabItem value="gameplay" label="Gameplay">
+        <Gameplay name="Gameplay"/>
+    </TabItem>
+    <TabItem value="rendering" label="Rendering">
+        <Rendering name="Rendering"/>
+    </TabItem>
+    <TabItem value="network" label="Network">
+        <Network name="Network"/>
+    </TabItem>
+    <TabItem value="tooling" label="Tooling">
+        <Tooling name="Tooling"/>
+    </TabItem>
+</Tabs> */}
+
 
 <EngineFoundation name="EngineFoundation"/>
 
