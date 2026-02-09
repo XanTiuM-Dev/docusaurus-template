@@ -298,7 +298,7 @@ const config: Config = {
       }`,
     },
     prism: {
-      additionalLanguages: [ 'java', 'powershell', 'bash', 'json' ], // https://github.com/facebook/docusaurus/blob/5997f3ab3ced61ba14d08f4ca89c1528b96dd332/website/docusaurus.config.ts#L639
+      additionalLanguages: [ 'powershell', 'bash', 'json' ], // https://github.com/facebook/docusaurus/blob/5997f3ab3ced61ba14d08f4ca89c1528b96dd332/website/docusaurus.config.ts#L639
       // theme: prismThemes.github,
       // darkTheme: prismThemes.dracula,
       theme: customPrismTheme,

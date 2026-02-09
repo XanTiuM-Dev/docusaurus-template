@@ -1,0 +1,145 @@
+---
+title: CodeBlock Wrapper
+sidebar_position: 4
+---
+
+{console.clear()}
+
+# CodeBlock Wrapper
+CodeBlock Wrapper can take following parameters:
+- `language`: Define syntax coloration depending on language (\```ts ...```)
+- `header`: Hide HeaderBlock when value set to `"false"` (`header="false"`)
+- `title`: Set a title in HeaderBlock (`title="My Title"`)
+- `flag` : Set a flag in HeaderBlock, override calculated flag (`flag="My Flag"`)
+- `icon` : Set an icon in HeaderBlock, override calculated icon (`icon="🎖️"`)
+- `useIcon` : Hide Icon in HeaderBlock when value set `"false"` (`useIcon="false"`)
+- `useFlag` : Hide Icon in HeaderBlock when value set `"false"` (`useFlag="false"`)
+
+
+## Demo
+### Simple CodeBlock
+No HeaderBlock by default
+> \`\`\` ... \`\`\`
+```
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + language
+HeaderBlock **with language name as flag** and **language icon as icon**
+> \`\`\`ts ... \`\`\`
+```ts
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + language + hidden HeaderBlock
+CodeBlock **with language** but **hidden HeaderBlock**
+> \`\`\`ts header="false" ... \`\`\`
+```ts header="false"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + title
+HeaderBlock **only with title**
+> \`\`\`title="docusaurus.config.ts > config > themeConfig > navbar > items" ... \`\`\`
+
+```title="docusaurus.config.ts > config > themeConfig > navbar > items"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + custom flag
+HeaderBlock only with **specified flag**
+> \`\`\`flag="My Flag \<3" ... \`\`\`
+```flag="My Flag <3"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+**Issues** :
+- first *space* of `flag` property is trimed.
+
+
+### CodeBlock + custom icon
+HeaderBlock only with **specified icon**
+> \`\`\`icon="🎖️" ... \`\`\`
+```icon="🎖️"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+> \`\`\`icon = "/img/icons/filetype/python.svg" ... \`\`\`
+```icon="/img/icons/filetype/python.svg"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + language + title + hidden icon
+HeaderBlock with **language name as flag** and **title** but **no icon**
+> \`\`\`ts title="My Title" useIcon="false" ... \`\`\`
+```ts title="My Title" useIcon="false"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + language + title + hidden flag
+HeaderBlock with **language name as flag** and **title**
+> \`\`\`ts title="My Title" useFlag="false" ... \`\`\`
+```ts title="My Title" useFlag="false"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
+
+
+### CodeBlock + language + title + custom flag + custom icon
+> \`\`\`ts title="My Title" flag="My Flag" icon="/img/icons/filetype/go.svg" ... \`\`\`
+```ts title="My Title" flag="My Flag" icon="/img/icons/filetype/go.svg"
+{
+    href: 'https://github.com/XanTiuM-Dev',
+    // label: 'GitHub',
+    position: 'right',
+    className: 'header-icon header-github-link',
+},
+```
